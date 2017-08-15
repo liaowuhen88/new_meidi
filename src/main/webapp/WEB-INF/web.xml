@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name></display-name>	
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+    <error-page>   
+<error-code>400</error-code>  
+<location>/meidiserver/error.jsp</location>  
+</error-page>  
+     <error-page>  
+<error-code>404</error-code>  
+<location>/meidiserver/error.jsp</location>  
+</error-page>  
+      <error-page>  
+<error-code>500</error-code>  
+<location>/meidiserver/error.jsp</location>  
+</error-page> 
+ <error-page>  
+<exception-type>java.lang.Exception</exception-type>  
+<location>/meidiserver/error.jsp</location>  
+</error-page>  
+ 
+  <error-page>  
+<exception-type>Unable to compile class for JSP</exception-type>  
+<location>/error.jsp</location>  
+</error-page>
+
+
+
+     <session-config>      
+       <session-timeout>120</session-timeout>   
+     </session-config> 
+    
+    <filter>
+  	<filter-name>EncodingFilter</filter-name>
+  	<filter-class>
+          filter.EncodingFilter
+     </filter-class>
+  	<init-param>
+  		
+  		<param-name>encoding</param-name>
+  		<param-value>UTF-8</param-value>
+  	</init-param> 
+  </filter>
+	<filter-mapping>
+		<filter-name>EncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+   <servlet>
+  <servlet-name>Log4jInit</servlet-name>
+  <servlet-class>servlet.Log4jInit</servlet-class>
+  <init-param>
+   <param-name>log4j</param-name>
+   <param-value>/WEB-INF/classes/log4j.properties</param-value>
+  </init-param>
+  <load-on-startup>0</load-on-startup>
+ </servlet>
+ 
+  <servlet>  
+	        <servlet-name>Juese_addServlet</servlet-name>  
+	        <servlet-class>  
+	            servlet.Juese_addServlet  
+	        </servlet-class>  
+   </servlet>  
+	    <servlet-mapping>   
+	        <servlet-name>Juese_addServlet</servlet-name>  
+	        <url-pattern>/meidiserver/admin/Juese_addServlet</url-pattern>  
+	    </servlet-mapping> 
+	     
+	    
+	    <servlet>  
+	        <servlet-name>OrderServlet</servlet-name>  
+	        <servlet-class>   
+	            servlet.OrderServlet  
+	        </servlet-class>  
+   </servlet>  
+	    <servlet-mapping>   
+	        <servlet-name>OrderServlet</servlet-name>  
+	        <url-pattern>/meidiserver/user/OrderServlet</url-pattern>  
+	    </servlet-mapping>
+	    
+	    
+	    <servlet>  
+	        <servlet-name>AfterSaleServlet</servlet-name>  
+	        <servlet-class>  
+	            servlet.AfterSaleServlet
+	        </servlet-class>   
+   </servlet>     
+	    <servlet-mapping>     
+	        <servlet-name>AfterSaleServlet</servlet-name>  
+	        <url-pattern>/meidiserver/AfterSaleServlet</url-pattern>  
+	    </servlet-mapping>
+	    
+	    <servlet>  
+	        <servlet-name>LogisticsServlet</servlet-name>  
+	        <servlet-class>  
+	            servlet.LogisticsServlet 
+	        </servlet-class>   
+   </servlet>    
+	    <servlet-mapping>     
+	        <servlet-name>LogisticsServlet</servlet-name>  
+	        <url-pattern>/meidiserver/LogisticsServlet</url-pattern>  
+	    </servlet-mapping>
+	    
+	    <servlet>  
+	        <servlet-name>OrderServiceServlet</servlet-name>  
+	        <servlet-class>  
+	            servlet.OrderServiceServlet 
+	        </servlet-class>  
+   </servlet>  
+	    <servlet-mapping>    
+	        <servlet-name>OrderServiceServlet</servlet-name>  
+	        <url-pattern>/meidiserver/admin/OrderServiceServlet</url-pattern>  
+	    </servlet-mapping>
+	    
+	<servlet>  
+	        <servlet-name>InventoryServlet</servlet-name>  
+	        <servlet-class>  
+	            servlet.InventoryServlet  
+	        </servlet-class>  
+   </servlet>  
+	    <servlet-mapping>     
+	        <servlet-name>InventoryServlet</servlet-name>  
+	        <url-pattern>/meidiserver/admin/inventory/InventoryServlet</url-pattern>  
+	    </servlet-mapping>     
+	    
+	 <servlet>  
+	        <servlet-name>RegistServlet</servlet-name>  
+	        <servlet-class>  
+	            servlet.RegistServlet  
+	        </servlet-class>  
+   </servlet>   
+	    <servlet-mapping>   
+	        <servlet-name>RegistServlet</servlet-name>  
+	        <url-pattern>/meidiserver/RegistServlet</url-pattern>  
+	    </servlet-mapping>  
+	<servlet>  
+	        <servlet-name>DatabaseServlet</servlet-name>  
+	        <servlet-class>  
+	            servlet.DatabaseServlet 
+	        </servlet-class>  
+   </servlet>  
+	    <servlet-mapping>  
+	        <servlet-name>DatabaseServlet</servlet-name>  
+	        <url-pattern>/meidiserver/admin/DatabaseServlet</url-pattern>  
+	    </servlet-mapping>   
+	  
+	    
+	 <servlet>  
+	        <servlet-name>PrintServlet</servlet-name>  
+	        <servlet-class>  
+	            servlet.PrintServlet  
+	        </servlet-class>  
+   </servlet>  
+        
+        <servlet-mapping>  
+	        <servlet-name>PrintServlet</servlet-name>  
+	        <url-pattern>/meidiserver/Print</url-pattern>  
+	    </servlet-mapping> 
+	    
+	    
+	    
+	    <servlet>   
+	        <servlet-name>GuanJiaPoPrintServlet</servlet-name>  
+	        <servlet-class>  
+	            servlet.GuanJiaPoPrintServlet  
+	        </servlet-class>  
+   </servlet>  
+   
+	    <servlet-mapping>  
+	        <servlet-name>GuanJiaPoPrintServlet</servlet-name>  
+	        <url-pattern>/meidiserver/GuanJiaPoPrint</url-pattern>  
+	    </servlet-mapping> 
+	    
+	  
+	  <servlet>  
+	        <servlet-name>ChargeExportServlet</servlet-name>  
+	        <servlet-class>  
+	            servlet.ChargeExportServlet
+	        </servlet-class>  
+   </servlet>  
+          
+	    <servlet-mapping>  
+	        <servlet-name>ChargeExportServlet</servlet-name>  
+	        <url-pattern>/meidiserver/admin/ChargeExportServlet</url-pattern>  
+	    </servlet-mapping> 
+	    
+	         
+	   
+	    <servlet>  
+	        <servlet-name>UpdateServlet</servlet-name>  
+	        <servlet-class>  
+	            servlet.UpdateServlet  
+	        </servlet-class> 
+	         
+   </servlet>  
+        
+	    <servlet-mapping>   
+	        <servlet-name>UpdateServlet</servlet-name>  
+ 	        <url-pattern>/meidiserver/Update</url-pattern>   
+	    </servlet-mapping>     
+	          
+	<servlet>  
+	        <servlet-name>SuningDataUpload</servlet-name>  
+	        <servlet-class>  
+	            wilson.upload.SuningDataUpload 
+	        </servlet-class>
+	        <init-param>
+			<param-name>uploadPath</param-name>
+			<param-value>
+				data/suningXLS
+			</param-value>
+			</init-param>  
+   </servlet>  
+           
+    <servlet-mapping>    
+        <servlet-name>SuningDataUpload</servlet-name>  
+	    <url-pattern>/meidiserver/SuningDataUpload</url-pattern>   
+    </servlet-mapping>  
+    
+    
+    
+    <servlet>  
+	        <servlet-name>SalaryModelUpload</servlet-name>  
+	        <servlet-class>  
+	            wilson.upload.SalaryModelUpload 
+	        </servlet-class>
+	        <init-param>
+			<param-name>uploadPath</param-name>
+			<param-value>
+				data/salaryModelXLS
+			</param-value>
+			</init-param>  
+   </servlet> 
+   <servlet-mapping>    
+        <servlet-name>SalaryModelUpload</servlet-name>  
+	    <url-pattern>/meidiserver/SalaryModelUpload</url-pattern>   
+    </servlet-mapping>
+    
+    <servlet>  
+	        <servlet-name>SalaryExport</servlet-name>  
+	        <servlet-class>  
+	            wilson.salaryCalc.SalaryExportServlet 
+	        </servlet-class>
+   </servlet> 
+   <servlet-mapping>    
+        <servlet-name>SalaryExport</servlet-name>  
+	    <url-pattern>/meidiserver/SalaryExportServlet</url-pattern>   
+    </servlet-mapping>
+	          
+     <servlet>
+	  	<servlet-name>ExcelUpload</servlet-name>
+	  	<servlet-class>wilson.upload.ExcelUpload</servlet-class>
+	  	<init-param>
+	  		<param-name>suningFilePath</param-name>
+	  		<param-value>data/salesXLS</param-value>
+	  	</init-param>
+	  	<init-param>
+	  		<param-name>salaryFilePath</param-name>
+	  		<param-value>data/salaryModelXLS</param-value>
+	  	</init-param>
+	  	<init-param>
+	  		<param-name>salesFilePath</param-name>
+	  		<param-value>data/salesXLS</param-value>
+	  	</init-param>
+	  	<init-param> 
+	  		<param-name>changeFilePath</param-name>
+	  		<param-value>data/changeXLS</param-value>
+	  	</init-param>
+	  </servlet>
+	  <servlet-mapping>
+	  	<servlet-name>ExcelUpload</servlet-name>
+	  	<url-pattern>/meidiserver/ExcelUpload</url-pattern>
+	  </servlet-mapping>
+	  
+	  <servlet>
+	  	<servlet-name>DownloadServlet</servlet-name>
+	  	<servlet-class>wilson.download.DownloadServlet</servlet-class>
+	  	<init-param>
+	  		<param-name>suningmubanPath</param-name>
+	  		<param-value>data/model/suningmuban.xls</param-value>
+	  	</init-param>
+	  	<init-param>
+	  		<param-name>tichengmubanPath</param-name>
+	  		<param-value>data/model/tichengmuban.xls</param-value>
+	  	</init-param>
+	  	<init-param>
+	  		<param-name>xiaoshoudanmubanPath</param-name>
+	  		<param-value>data/model/xiaoshoudanmuban.xls</param-value>
+	  	</init-param>
+	  	<init-param> 
+	  		<param-name>changemubanPath</param-name>
+	  		<param-value>data/model/changeModel.xls</param-value>
+	  	</init-param>
+	  </servlet>
+	  <servlet-mapping>
+	  	<servlet-name>DownloadServlet</servlet-name>
+	  	<url-pattern>/meidiserver/DownloadServlet</url-pattern>
+	  </servlet-mapping>
+	          
+    <servlet>  
+      <servlet-name>ModelServlet</servlet-name>  
+      <servlet-class>  
+          servlet.ModelServlet  
+      </servlet-class>  
+   </servlet>   
+    <servlet-mapping>   
+        <servlet-name>ModelServlet</servlet-name>  
+	        <url-pattern>/meidiserver/Model</url-pattern>   
+    </servlet-mapping>
+    
+    
+    
+    
+    <servlet>
+    <servlet-name>MatchOrderExportServlet</servlet-name>  
+    <servlet-class>  
+          wilson.matchOrder.MatchOrderExportServlet
+      </servlet-class>  
+   </servlet>   
+    <servlet-mapping>   
+        <servlet-name>MatchOrderExportServlet</servlet-name>  
+	        <url-pattern>/meidiserver/MatchOrderExport</url-pattern>   
+    </servlet-mapping>
+    
+    <servlet>
+    <servlet-name>UploadExportServlet</servlet-name>  
+    <servlet-class>  
+          wilson.upload.UploadExportServlet
+      </servlet-class>  
+   </servlet>   
+    <servlet-mapping>   
+        <servlet-name>UploadExportServlet</servlet-name>  
+	        <url-pattern>/meidiserver/UploadExport</url-pattern>   
+    </servlet-mapping>
+    
+    
+    
+    <!-- android支持 -->
+	 <servlet>
+	    <description>支持android的登录</description>
+	    <display-name>android_login</display-name>
+	    <servlet-name>LoginServlet</servlet-name>
+	    <servlet-class>wilson.android.support.LoginServlet</servlet-class>
+ 	 </servlet>
+  
+
+	 <servlet-mapping>
+	   <servlet-name>LoginServlet</servlet-name>
+	   <url-pattern>/servlet/LoginServlet</url-pattern>
+	 </servlet-mapping>
+	 
+	  <!-- 路径servlet -->
+	<servlet>
+    	<description>路径初始化用servlet</description>
+    	<display-name>pathServlet</display-name>
+    	<servlet-name>PathUtill</servlet-name>
+    	<servlet-class>utill.PathUtill</servlet-class>
+    	<load-on-startup>1</load-on-startup>
+	</servlet>
+  <servlet-mapping>
+    <servlet-name>PathUtill</servlet-name>
+    <url-pattern>/servlet/PathUtill</url-pattern>
+  </servlet-mapping> 
+	      
+	       
+	    <filter>
+		<filter-name>AdminFilter</filter-name>
+		<filter-class>
+			filter.AdminFilter
+		</filter-class>
+	 </filter>
+	  <filter-mapping>
+	  
+		<filter-name>AdminFilter</filter-name>
+		<url-pattern>/meidiserver/admin/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>  
+		<filter-name>AuthFilter</filter-name>
+		<filter-class>
+			filter.UserFilter
+		</filter-class>
+	 </filter>
+	  <filter-mapping> 
+		<filter-name>AuthFilter</filter-name>
+		<url-pattern>/meidiserver/user/*</url-pattern>
+	</filter-mapping>
+	  
+
+
+
+
+</web-app>
