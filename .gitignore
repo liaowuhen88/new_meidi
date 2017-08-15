@@ -9,6 +9,7 @@
 .idea/misc.xml
 .idea/modules.xml
 .idea/workspace.xml
+.idea/vcs.xml
 new_meidi.iml
-src/main/webapp/meidiserver/style/js/
 target/
+src/main/webapp/meidiserver/style/js/
