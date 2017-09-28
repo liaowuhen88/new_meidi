@@ -21,9 +21,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class OrderManager {
-    protected static Log logger = LogFactory.getLog(OrderManager.class);
     public static SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+    protected static Log logger = LogFactory.getLog(OrderManager.class);
 
     public static int updatePrint2(int statues, String id, String pid) {
         int flag = -1;
@@ -370,37 +369,6 @@ public class OrderManager {
         }
     }
 
-    public boolean updateOrder(User user, Order order) {
-        if (user.getUsertype() == 2 && user.getId() == order.getSaleID()) {
-            Connection conn = DB.getConn();
-            String sql = "update mdorder set productCategory = ?, productType = ? , locate = ?" +
-                    ", locateDetail = ?, date = ?, time = ?, saleID = ?" +
-                    ", saleTime = ?, printSatues = ?, mail = ?,oderStatus = ?";
-            PreparedStatement pstmt = DB.prepare(conn, sql);
-            try {
-                //pstmt.setString(1, order.getProductCategory());
-                pstmt.setString(2, order.getProductType());
-                pstmt.setString(3, order.getLocate());
-                pstmt.setString(4, order.getLocateDetail());
-                pstmt.setString(5, order.getDate());
-                pstmt.setString(6, order.getTime());
-                pstmt.setInt(7, order.getSaleID());
-                pstmt.setString(8, order.getSaleTime());
-                pstmt.setInt(9, order.getPrintSatues());
-                pstmt.setString(10, order.getMail());
-                //pstmt.setInt(11, order.getOderStatus());
-                pstmt.executeUpdate();
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(pstmt);
-                DB.close(conn);
-            }
-        }
-        return false;
-    }
-
     // select top 1 * from table order by id desc
     public static int getMaxid() {
         int id = 1;
@@ -447,7 +415,6 @@ public class OrderManager {
 
     }
 
-
     public static boolean getid(int id) {
         boolean flag = false;
         if (0 == id) {
@@ -472,7 +439,6 @@ public class OrderManager {
         }
         return flag;
     }
-
 
     public static int save(User user, Order order) {
         int flag = -1;
@@ -537,7 +503,7 @@ public class OrderManager {
 
             String printlnid = "";
             if (order.getOderStatus().equals(20 + "")) {
-		    	 /*String sql1 = "insert into  mdorderupdateprint (id, message ,statues , orderid,mdtype ,pGroupId,uid,groupid)" +
+                 /*String sql1 = "insert into  mdorderupdateprint (id, message ,statues , orderid,mdtype ,pGroupId,uid,groupid)" +
 	                     "  values ( null, '换货申请', 0,"+order.getImagerUrl()+","+OrderPrintln.huanhuo+","+user.getUsertype()+","+user.getId()+","+user.getUsertype()+")";
 
 		    	 sqls.add(sql1);*/
@@ -589,7 +555,6 @@ public class OrderManager {
         return flag;
 
     }
-
 
     public static List<Order> getOrderlist(User user, int type, int statues, int num, int page, String sort, String search) {
 
@@ -803,6 +768,10 @@ public class OrderManager {
 
         if ("".equals(sql)) {
             return null;
+        } else {
+            if (!sql.contains("limit")) {
+                sql = sql + " limit 0,500";
+            }
         }
         logger.info(sql);
         Connection conn = DB.getConn();
@@ -823,7 +792,6 @@ public class OrderManager {
         }
         return Orders;
     }
-
 
     public static int getOrderlistcount(User user, int type, int statues, int num, int page, String sort, String search) {
 
@@ -1401,7 +1369,6 @@ public class OrderManager {
         return Orders;
     }
 
-
     public static Order getOrderID(User user, int id) {
 
         Order orders = null;
@@ -1485,7 +1452,6 @@ public class OrderManager {
         return sql;
     }
 
-
     public static boolean delete(User user, int oid) {
 
         boolean flag = false;
@@ -1520,7 +1486,6 @@ public class OrderManager {
         return flag;
     }
 
-
     public static List<String> update(int id) {
 
         List<String> listsqls = new ArrayList<String>();
@@ -1534,14 +1499,14 @@ public class OrderManager {
         return listsqls;
     }
 
-    // 添加H单号后更新状态
-
     public static void updateHPOS(User user, String ids) {
 
         String sql = "update mdorder set categoryID = 0 where id in " + ids;
 
         DBUtill.sava(sql);
     }
+
+    // 添加H单号后更新状态
 
     public static boolean deleteed(int id) {
         boolean b = false;
@@ -1643,6 +1608,37 @@ public class OrderManager {
             e.printStackTrace();
         }
         return p;
+    }
+
+    public boolean updateOrder(User user, Order order) {
+        if (user.getUsertype() == 2 && user.getId() == order.getSaleID()) {
+            Connection conn = DB.getConn();
+            String sql = "update mdorder set productCategory = ?, productType = ? , locate = ?" +
+                    ", locateDetail = ?, date = ?, time = ?, saleID = ?" +
+                    ", saleTime = ?, printSatues = ?, mail = ?,oderStatus = ?";
+            PreparedStatement pstmt = DB.prepare(conn, sql);
+            try {
+                //pstmt.setString(1, order.getProductCategory());
+                pstmt.setString(2, order.getProductType());
+                pstmt.setString(3, order.getLocate());
+                pstmt.setString(4, order.getLocateDetail());
+                pstmt.setString(5, order.getDate());
+                pstmt.setString(6, order.getTime());
+                pstmt.setInt(7, order.getSaleID());
+                pstmt.setString(8, order.getSaleTime());
+                pstmt.setInt(9, order.getPrintSatues());
+                pstmt.setString(10, order.getMail());
+                //pstmt.setInt(11, order.getOderStatus());
+                pstmt.executeUpdate();
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                DB.close(pstmt);
+                DB.close(conn);
+            }
+        }
+        return false;
     }
 
 }
