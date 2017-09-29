@@ -1,16 +1,21 @@
 package utill;
 
+import database.DB;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import javax.servlet.http.Cookie;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import javax.servlet.http.Cookie;
-
 public class CookieUtill {
-    public static String isRight(Cookie Cookies[],String sear){
+	protected static Log logger = LogFactory.getLog(DB.class);
+
+	public static String isRight(Cookie Cookies[],String sear){
     	String str = "";
-    		if(Cookies==null){ 
-    			   System.out.println("还没有cookie值");
-    			   }else { 
+		if (Cookies == null) {
+			logger.info("还没有cookie值");
+		}else {
     					for(int i=0;i < Cookies.length;i++){
 							try {
 								String name = URLDecoder.decode(Cookies[i].getName(),"utf-8");

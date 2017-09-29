@@ -1,28 +1,11 @@
-<%@ page language="java" import="java.util.*,user.*,java.net.URLEncoder,java.net.URLDecoder,group.*" pageEncoding="utf-8" contentType="text/html;charset=utf-8"%>
+<%@ page language="java" import="user.PasswordNotCorrectException,user.User,user.UserManager,user.UserNotFoundException"
+		 pageEncoding="utf-8" contentType="text/html;charset=utf-8" %>
 
 <%
 request.setCharacterEncoding("utf-8");
-boolean flag = true ;
-User user = (User)session.getAttribute("user");
 
 String username = "";
 String password = "";
-
-Cookie Cookies[]=request.getCookies();
-if(Cookies==null){
-   System.out.println("还没有cookie值");
-   }else {
-		for(int i=0;i < Cookies.length;i++){
-			//System.out.println("cookie值"+Cookies.length);
-			if("username".equals(URLDecoder.decode(Cookies[i].getName(),"utf-8"))){
-				username = URLDecoder.decode(Cookies[i].getValue(),"utf-8");
-			  
-			}else if("password".equals(URLDecoder.decode(Cookies[i].getName(),"utf-8"))){
-				password = URLDecoder.decode(Cookies[i].getValue(),"utf-8");
-				
-			}
-         }
-}
 
 String action = request.getParameter("action");
   
@@ -41,16 +24,6 @@ if(action != null && action.equals("login")) {
 	try {
 		User u = UserManager.check(username, password);
 		if(u != null ){
-			String userNamecook = URLEncoder.encode(username, "utf-8");
-			String passwordcook = URLEncoder.encode(password, "utf-8");
-			
-			//URLDecoder.decode(cookies[i].getName(),"utf-8");
-			Cookie cookie=new Cookie("username",userNamecook);
-			Cookie cookiep=new Cookie("password",passwordcook);
-			cookie.setMaxAge(10*60);  //设置过期之前的最长时间
-			cookiep.setMaxAge(10*60);
-			response.addCookie(cookie);
-			response.addCookie(cookiep);
 			session.setAttribute("user", u);
 		}
 	  response.sendRedirect("admin/index.jsp");

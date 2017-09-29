@@ -933,8 +933,6 @@ public class UserManager {
 			throws UserNotFoundException, PasswordNotCorrectException, UnsupportedEncodingException {
 		User u = null;
 		Connection conn = DB.getInstance().getConn();
-
-
 		String sql = "select * from mduser where username = '" + username + "' and statues = 1;";
 		logger.info(sql);
 		Statement stmt = DB.getStatement(conn); 

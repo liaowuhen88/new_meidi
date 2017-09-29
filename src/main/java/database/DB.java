@@ -1,36 +1,56 @@
 package database;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.alibaba.druid.pool.DruidDataSource;
+import order.Order;
+import order.OrderManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import utill.DBUtill;
 
 import java.beans.PropertyVetoException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DB {
     //使用单利模式创建数据库连接池
     protected static Log logger = LogFactory.getLog(DB.class);
-    private static ComboPooledDataSource dataSource;
     private static DB instance;
+    private DruidDataSource dataSource;
 
     private DB() throws SQLException, PropertyVetoException {
-        dataSource = new ComboPooledDataSource();
 
-        dataSource.setUser("liaowuhen");     //用户名
-        dataSource.setPassword("liaowuhen"); //密码
-        dataSource.setJdbcUrl("jdbc:mysql://liaowuhen.gotoftp3.com:3306/liaowuhen");//数据库地址
+        logger.info("DataSource");
+        dataSource = new DruidDataSource();
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://liaowuhen.gotoftp3.com:3306/liaowuhen");
+        dataSource.setUsername("liaowuhen");
+        dataSource.setPassword("liaowuhen");
+        dataSource.setMaxActive(50);
+        dataSource.setInitialSize(5);
+        dataSource.setMaxWait(6000);
+        dataSource.setTimeBetweenEvictionRunsMillis(60000);
+        dataSource.setMinEvictableIdleTimeMillis(300000);
+        dataSource.setRemoveAbandoned(true);
+        dataSource.setRemoveAbandonedTimeoutMillis(1800);
+        dataSource.setLogAbandoned(true);
+        //dataSource.setFilters("mergeStat");
 
-        try {
-            dataSource.setDriverClass("com.mysql.jdbc.Driver");
-        } catch (PropertyVetoException e) {
-            logger.error("error", e);
+    }
+
+    public static void main(String[] args) {
+        int i = 0;
+        while (true) {
+            List<Order> list = OrderManager.getCheckedDBOrders();
+
+            List<String> sql = new ArrayList<String>();
+            String sql1 = "insert into test1 (id,name )VALUES( null,'name');";
+            String sql2 = "insert into test2 (id,name )VALUES( null,'name');";
+            sql.add(sql1);
+            sql.add(sql2);
+            DBUtill.sava(sql);
+            logger.info(list);
         }
-        dataSource.setInitialPoolSize(5); //初始化连接数
-        dataSource.setMinPoolSize(5);//最小连接数
-        dataSource.setMaxPoolSize(10);//最大连接数
-        dataSource.setMaxStatements(50);//最长等待时间
-        dataSource.setMaxIdleTime(60);//最大空闲时间，单位毫秒
-
     }
 
     public static final DB getInstance() {
@@ -51,7 +71,7 @@ public class DB {
                 pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("error", e);
         }
         return pstmt;
     }
@@ -63,7 +83,7 @@ public class DB {
                 pstmt = conn.prepareStatement(sql, autoGenereatedKeys);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("error", e);
         }
         return pstmt;
     }
@@ -75,7 +95,7 @@ public class DB {
                 stmt = conn.createStatement();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("error", e);
         }
         return stmt;
     }
@@ -87,7 +107,7 @@ public class DB {
                 rs = stmt.executeQuery(sql);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("error", e);
         }
         return rs;
     }
@@ -99,7 +119,7 @@ public class DB {
                 i = stmt.executeUpdate(sql);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("error", e);
         }
         return i;
     }
@@ -108,10 +128,9 @@ public class DB {
         try {
             if (conn != null) {
                 conn.close();
-                conn = null;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("error", e);
         }
     }
 
@@ -119,10 +138,9 @@ public class DB {
         try {
             if (stmt != null) {
                 stmt.close();
-                stmt = null;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("error", e);
         }
     }
 
@@ -130,10 +148,9 @@ public class DB {
         try {
             if (rs != null) {
                 rs.close();
-                rs = null;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("error", e);
         }
     }
 
@@ -141,9 +158,12 @@ public class DB {
         Connection conn = null;
         try {
             conn = dataSource.getConnection();
+            logger.info(conn);
         } catch (SQLException e) {
             logger.error("error", e);
         }
         return conn;
     }
+
+
 }
