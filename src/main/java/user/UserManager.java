@@ -228,6 +228,10 @@ public class UserManager {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
+			} finally {
+				DB.close(rs);
+				DB.close(stmt);
+				DB.close(conn);
 			}
 			return Permissions;
 		}
