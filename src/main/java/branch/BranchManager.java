@@ -1,24 +1,17 @@
 package branch;
 
+import database.DB;
 import group.GroupService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import utill.DBUtill;
+import utill.StringUtill;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
- 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import utill.DBUtill;
-import utill.StringUtill;
-
-import database.DB;
   
 public class BranchManager {
 	
@@ -63,7 +56,7 @@ public class BranchManager {
 	 
 		public static List<Branch> getLocate(String id ) {
 			List<Branch> users = new ArrayList<Branch>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch where pid = "+ id +" and disable = 0 ";
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -83,8 +76,8 @@ public class BranchManager {
 		}
           
 		public static int getcount(String id ) {
-			int count = 0;   
-			Connection conn = DB.getConn();
+			int count = 0;
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch where pid in "+ id ;
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -107,7 +100,7 @@ public class BranchManager {
 		
 		public static List<Branch> getLocate(int statues ) {
 			List<Branch> users = new ArrayList<Branch>();
-			Connection conn = DB.getConn(); 
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch where pid in (select id from mdbranchtype where statues = "+statues+")" ;
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -128,7 +121,7 @@ public class BranchManager {
 		
 		public static List<String> getLocateAll( ) {
 			List<String> users = new ArrayList<String>();
-			Connection conn = DB.getConn();   
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch where disable = 0 " ;
 			Statement stmt = DB.getStatement(conn);  
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -149,7 +142,7 @@ public class BranchManager {
 		
 		public static List<String> getLocateAllIsable( ) {
 			List<String> users = new ArrayList<String>();
-			Connection conn = DB.getConn();   
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch where disable = 0 " ;
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -170,7 +163,7 @@ public class BranchManager {
 		
 		public static List<Branch> getLocate( ) {
 			List<Branch> users = new ArrayList<Branch>();
-			Connection conn = DB.getConn();   
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch  " ;
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -191,7 +184,7 @@ public class BranchManager {
 		
 		public static Branch getLocatebyname(String name ) {
 			Branch branch = new Branch();
-			Connection conn = DB.getConn(); 
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch where bname = '"+ name + "'" ;
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -211,8 +204,8 @@ public class BranchManager {
 		}
 		  
 		public static int getBranchID(String name ) {
-		    int id = 0 ; 
-			Connection conn = DB.getConn(); 
+		    int id = 0 ;
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch where bname = '"+ name + "'" ;
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -232,8 +225,8 @@ public class BranchManager {
 		}
 		
 		public static int update(String bid,String statues ) {
-		    int id = 0 ; 
-			Connection conn = DB.getConn();  
+		    int id = 0 ;
+			Connection conn = DB.getInstance().getConn();
 			String sql = " update mdbranch set statues = " + statues + " where id = " + bid  ;
 			PreparedStatement pstmt = DB.prepare(conn, sql);
 			try {  
@@ -249,8 +242,8 @@ public class BranchManager {
 		} 
 		
 		public static Branch getLocatebyid(String id ) {
-			Branch branch = new Branch();  
-			Connection conn = DB.getConn(); 
+			Branch branch = new Branch();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch where id = "+ id + "" ;
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -271,7 +264,7 @@ public class BranchManager {
 		
 		public static Map<String,List<String>> getLocateMap() {
 			Map<String,List<String>> map = new HashMap<String,List<String>>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch ";
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -297,7 +290,7 @@ public class BranchManager {
 		
 		public static Map<Integer,Branch> getIdMap() {
 			Map<Integer,Branch> map = new HashMap<Integer,Branch>();
-			Connection conn = DB.getConn(); 
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch ";
 logger.info(sql);			
 			Statement stmt = DB.getStatement(conn); 
@@ -319,7 +312,7 @@ logger.info(sql);
 		
 		public static Map<String,Branch> getNameMap() {
 			Map<String,Branch> map = new HashMap<String,Branch>();
-			Connection conn = DB.getConn(); 
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch ";
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -340,7 +333,7 @@ logger.info(sql);
 		
 		public static Map<String,List<Branch>> getLocateMapBranch() {
 			Map<String,List<Branch>> map = new HashMap<String,List<Branch>>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch where disable = 0  ";
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -367,8 +360,8 @@ logger.info(sql);
 		public static boolean delete(String str ) {
 			
 			String ids = "(" + str + ")"; 
-			boolean b = false;  
-			Connection conn = DB.getConn();  
+			boolean b = false;
+			Connection conn = DB.getInstance().getConn();
 			String sql = "update mdbranch set disable = 1 where id in " + ids;
 logger.info(sql); 
 			Statement stmt = DB.getStatement(conn);
@@ -385,7 +378,7 @@ logger.info(sql);
 		 
 		public static boolean isname(String name){
 			boolean flag = false ;
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranch where bname = '"+ name +"'";
 			logger.info(sql);
 			Statement stmt = DB.getStatement(conn); 

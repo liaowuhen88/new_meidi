@@ -73,7 +73,7 @@ public class InventoryCheckManager {
     private static List<InventoryCheck> getInventoryVerify() {
         List<InventoryCheck> li = new ArrayList<InventoryCheck>();
 
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         PreparedStatement stmt = DB.prepare(conn,sql);
         ResultSet rs = null;
         try {

@@ -1,6 +1,14 @@
 package inventory;
 
+import database.DB;
 import group.Group;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import user.User;
+import user.UserManager;
+import utill.DBUtill;
+import utill.StringUtill;
+import utill.TimeUtill;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,35 +16,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import branch.Branch;
-import branch.BranchManager;
-
-import category.Category;
-import category.CategoryManager;
-
-import order.OrderManager;
-import orderPrint.OrderPrintlnManager;
-import orderproduct.OrderProductManager;
-
-import user.User;
-import user.UserManager;
-import utill.DBUtill;
-import utill.StringUtill;
-import utill.TimeUtill;
-
-import database.DB;
 
 public class InventoryManager {
 	protected static Log logger = LogFactory.getLog(InventoryManager.class);
 	
 	public static List<Inventory> getCategory(User user,String statues,String starttime,String endtime) { 
 		List<Inventory> categorys = new ArrayList<Inventory>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		int branchid = Integer.valueOf(user.getBranch());  
 		String sql = "";
 		String sear = "";
@@ -78,7 +64,7 @@ public class InventoryManager {
 	 
 	public static List<Inventory> getCategory(User user,String statues) { 
 		List<Inventory> categorys = new ArrayList<Inventory>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		int branchid = Integer.valueOf(user.getBranch());  
 		String sql = "";
 		
@@ -123,7 +109,7 @@ public class InventoryManager {
 	
 	public static List<Inventory> getCategoryAnalyze(User user,String statues) { 
 		List<Inventory> categorys = new ArrayList<Inventory>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		int branchid = Integer.valueOf(user.getBranch());  
 		String sql = "";
 		if(UserManager.checkPermissions(user, Group.dealSend)){
@@ -159,8 +145,8 @@ public class InventoryManager {
 	}
 	
 	public static boolean check(String method,String id ) {    
-		boolean flag = false ;  
-		Connection conn = DB.getConn();    
+		boolean flag = false ;
+		Connection conn = DB.getInstance().getConn();
 		String sql = "";   
 		if("outbranch".equals(method)){  
 			sql = "select * from inventory where  instatues = 1 and outstatues = 0 and  id = " + id;  
@@ -253,7 +239,7 @@ public class InventoryManager {
 	public static Inventory getMaxOrder(){
 	    int id = 1 ;
 	    Inventory order = null;
-	    Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn);
 		//  select top 1 * from table order by id desc 
 		// select * from table where id in (select max(id) from table)
@@ -320,8 +306,8 @@ public class InventoryManager {
 		Inventory orders = null;   
 		   String sql = "";   
 			   sql = "select * from  inventory where id = "+ id ;
-	logger.info(sql); 
-			    Connection conn = DB.getConn();
+	logger.info(sql);
+		Connection conn = DB.getInstance().getConn();
 				Statement stmt = DB.getStatement(conn);
 				ResultSet rs = DB.getResultSet(stmt, sql);
 				try {  

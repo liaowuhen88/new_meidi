@@ -1,6 +1,17 @@
 package aftersale;
 
+import category.CategoryService;
+import database.DB;
 import group.Group;
+import order.Order;
+import order.OrderService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import product.ProductService;
+import user.User;
+import user.UserManager;
+import utill.DBUtill;
+import utill.TimeUtill;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,23 +19,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import order.Order;
-import order.OrderService;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import product.ProductService;
-
-import category.CategoryService;
-
-import database.DB;
-
-import user.User;
-import user.UserManager;
-import utill.DBUtill;
-import utill.TimeUtill;
 
 public class AfterSaleManager {
 	protected static Log logger = LogFactory.getLog(AfterSaleManager.class);
@@ -94,9 +88,9 @@ public class AfterSaleManager {
 	    AfterSale af = new AfterSale();
 	   
 	    String sql = " select * from  mdaftersale  where id in ("+ id+")";
-	    
-	    Connection conn = DB.getConn();
-	       Statement stmt = DB.getStatement(conn);
+
+	   Connection conn = DB.getInstance().getConn();
+	   Statement stmt = DB.getStatement(conn);
 	      
 		   ResultSet rs = DB.getResultSet(stmt, sql); 
 				try {  
@@ -153,9 +147,9 @@ public class AfterSaleManager {
 		  if("".equals(sql)){
 			   return null;  
 		   } 
-	logger.info(sql); 
-		   Connection conn = DB.getConn();
-	       Statement stmt = DB.getStatement(conn);
+	logger.info(sql);
+	   Connection conn = DB.getInstance().getConn();
+	   Statement stmt = DB.getStatement(conn);
 	      
 		   ResultSet rs = DB.getResultSet(stmt, sql); 
 				try { 
@@ -175,7 +169,7 @@ public class AfterSaleManager {
    
    public static int getMaxid(){
 	    int id = 1 ;
-	    Connection conn = DB.getConn();
+	   Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn);
 		String  sql = "select max(id)+1 as id from mdaftersale" ;
 		ResultSet rs = DB.getResultSet(stmt, sql);

@@ -270,7 +270,7 @@ public class InventoryVerifyManager {
         }
         List<InventoryVerify> li = new ArrayList<InventoryVerify>();
 
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         PreparedStatement stmt = DB.prepare(conn, sql);
         ResultSet rs = null;
         try {

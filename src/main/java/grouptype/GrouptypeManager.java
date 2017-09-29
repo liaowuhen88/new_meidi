@@ -1,25 +1,17 @@
 package grouptype;
 
 
+import database.DB;
 import group.Group;
 import group.GroupManager;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import branchtype.BranchType;
-
 import user.User;
 import user.UserManager;
-import database.DB;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GrouptypeManager {
 	protected static Log logger = LogFactory.getLog(GrouptypeManager.class);
@@ -27,7 +19,7 @@ public class GrouptypeManager {
 	public static List<Grouptype> getGroup(User user) {
 		 
 		List<Grouptype> users = new ArrayList<Grouptype>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "";  
 		if(UserManager.checkPermissions(user, Group.Manger)){
 			sql = "select * from mdgrouptype " ;  
@@ -53,7 +45,7 @@ public class GrouptypeManager {
 	public static List<Grouptype> getGrouptype() {
 		 
 		List<Grouptype> users = new ArrayList<Grouptype>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mdgrouptype " ;  
 		
 		    
@@ -75,7 +67,7 @@ public class GrouptypeManager {
 	}
 	
 	public static boolean  save(String  c){
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "insert into mdgrouptype(id,gname,statues) values (null, ?,?)";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try { 
@@ -92,7 +84,7 @@ public class GrouptypeManager {
 	}
 	public static Grouptype getGrouptype(int id) {
 		Grouptype g = new Grouptype();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mdgrouptype where id = " + id ;
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
@@ -112,8 +104,8 @@ public class GrouptypeManager {
 	
 	
 	public static int getgrouptype(int id ) {
-		int type = 0;   
-		Connection conn = DB.getConn();
+		int type = 0;
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mdgrouptype where type = "+ id ;
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
@@ -147,7 +139,7 @@ public class GrouptypeManager {
 		}
 		
 		int count = 0 ;
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "delete from mdgrouptype where id = " + ptype;
 logger.info(sql);  
 		Statement stmt = DB.getStatement(conn);
@@ -166,7 +158,7 @@ logger.info(sql);
 	
 	
 	public static boolean  update(String  c ,String bid ){
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "update mdgrouptype set gname = ? where id = " + bid ;
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try { 

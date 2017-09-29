@@ -1,42 +1,47 @@
 package database;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.beans.PropertyVetoException;
 import java.sql.*;
 
 public class DB {
     //使用单利模式创建数据库连接池
+    protected static Log logger = LogFactory.getLog(DB.class);
     private static ComboPooledDataSource dataSource;
+    private static DB instance;
 
-    static {
+    private DB() throws SQLException, PropertyVetoException {
         dataSource = new ComboPooledDataSource();
 
         dataSource.setUser("liaowuhen");     //用户名
         dataSource.setPassword("liaowuhen"); //密码
         dataSource.setJdbcUrl("jdbc:mysql://liaowuhen.gotoftp3.com:3306/liaowuhen");//数据库地址
+
         try {
             dataSource.setDriverClass("com.mysql.jdbc.Driver");
-            dataSource.setInitialPoolSize(5); //初始化连接数
-            dataSource.setMinPoolSize(1);//最小连接数
-            dataSource.setMaxPoolSize(10);//最大连接数
-            dataSource.setMaxStatements(50);//最长等待时间
-            dataSource.setMaxIdleTime(60);//最大空闲时间，单位毫秒
-
         } catch (PropertyVetoException e) {
-            e.printStackTrace();
+            logger.error("error", e);
         }
+        dataSource.setInitialPoolSize(5); //初始化连接数
+        dataSource.setMinPoolSize(5);//最小连接数
+        dataSource.setMaxPoolSize(10);//最大连接数
+        dataSource.setMaxStatements(50);//最长等待时间
+        dataSource.setMaxIdleTime(60);//最大空闲时间，单位毫秒
 
     }
 
-    public static final Connection getConn() {
-        Connection conn = null;
-        try {
-            conn = dataSource.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public static final DB getInstance() {
+        if (instance == null) {
+            try {
+                instance = new DB();
+            } catch (Exception e) {
+                logger.error("error", e);
+            }
         }
-        return conn;
+        return instance;
     }
 
     public static PreparedStatement prepare(Connection conn, String sql) {
@@ -130,5 +135,15 @@ public class DB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public synchronized final Connection getConn() {
+        Connection conn = null;
+        try {
+            conn = dataSource.getConnection();
+        } catch (SQLException e) {
+            logger.error("error", e);
+        }
+        return conn;
     }
 }

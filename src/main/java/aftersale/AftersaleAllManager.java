@@ -1,6 +1,12 @@
 package aftersale;
 
+import database.DB;
 import group.Group;
+import order.Order;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import user.User;
+import user.UserManager;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -10,14 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import order.Order;
-import user.User;
-import user.UserManager;
-import database.DB;
 
 public class AftersaleAllManager {
 	protected static Log logger = LogFactory.getLog(AftersaleAllManager.class);
@@ -61,7 +59,7 @@ public class AftersaleAllManager {
 			   return null;  
 		   } 
 	logger.info(sql); 
-		   Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 	       Statement stmt = DB.getStatement(conn);
 	      
 		   ResultSet rs = DB.getResultSet(stmt, sql); 
@@ -89,7 +87,7 @@ public class AftersaleAllManager {
 		 String sql = "select * from mdaftersale,mdaftersaleproduct where  mdaftersaleproduct.dealsendid = "+user.getId()+"  and  mdaftersaleproduct.statues = "+statues+"  and mdaftersaleproduct.asid = mdaftersale.id  and mdaftersaleproduct.type = "+AfterSaleProduct.maintain;
 	
 		 logger.info(sql); 
-		   Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 	       Statement stmt = DB.getStatement(conn);
 	      
 		   ResultSet rs = DB.getResultSet(stmt, sql); 
@@ -116,7 +114,7 @@ public class AftersaleAllManager {
 		 String sql = "select * from mdaftersale,mdaftersaleproduct where  mdaftersaleproduct.dealsendid = "+user.getId()+"  and  mdaftersaleproduct.statues = "+statues+" and  mdaftersaleproduct.asid = mdaftersale.id  and mdaftersaleproduct.type = "+AfterSaleProduct.fault;
 	 
 		 logger.info(sql);  
-		   Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 	       Statement stmt = DB.getStatement(conn);
 	      
 		   ResultSet rs = DB.getResultSet(stmt, sql); 
@@ -165,7 +163,7 @@ public class AftersaleAllManager {
 		   
 		    String sql = "select * from mdaftersale,mdaftersaleproduct where mdaftersale.id = "+id+"   and  mdaftersaleproduct.asid = mdaftersale.id ";
 		    
-		       Connection conn = DB.getConn();
+		       Connection conn = DB.getInstance().getConn();
 		       Statement stmt = DB.getStatement(conn);
 logger.info(sql); 		      
 			   ResultSet rs = DB.getResultSet(stmt, sql); 

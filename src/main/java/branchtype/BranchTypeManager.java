@@ -1,21 +1,14 @@
 package branchtype;
 
 
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
+import branch.BranchManager;
+import database.DB;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import branch.BranchManager;
-
-import database.DB;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
   
 public class BranchTypeManager {
 	
@@ -23,7 +16,7 @@ public class BranchTypeManager {
 	
 	 
 	 public static boolean  save(String  c){
-		Connection conn = DB.getConn(); 
+		 Connection conn = DB.getInstance().getConn();
 		String sql = "insert into mdbranchtype(id,bname) values (null, ?)";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try {
@@ -39,7 +32,7 @@ public class BranchTypeManager {
 	}
 	
 	 public static boolean  update(String  c ,String bid ){
-			Connection conn = DB.getConn(); 
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "update mdbranchtype set bname = ? where id = " + bid ;
 			PreparedStatement pstmt = DB.prepare(conn, sql);
 			try { 
@@ -56,7 +49,7 @@ public class BranchTypeManager {
 	  
 	 
 	 public static boolean  update(int  statues ,String bid ){
-			Connection conn = DB.getConn(); 
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "update mdbranchtype set statues = ? where id = " + bid ;
 			PreparedStatement pstmt = DB.prepare(conn, sql);
 			try { 
@@ -74,7 +67,7 @@ public class BranchTypeManager {
 
 		public static List<BranchType> getLocate() {
 			List<BranchType> users = new ArrayList<BranchType>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranchtype";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -96,7 +89,7 @@ public class BranchTypeManager {
 		
 		public static BranchType getLocate(int id) {
 			BranchType g = new BranchType();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdbranchtype where id = " + id ;
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -122,8 +115,8 @@ public class BranchTypeManager {
 			if(count > 0){
 				return false ;
 			}
-			 
-			Connection conn = DB.getConn();
+
+			Connection conn = DB.getInstance().getConn();
 			String sql = "delete from mdbranchtype where id in " + ids;
 logger.info(sql);
 			Statement stmt = DB.getStatement(conn);

@@ -1,35 +1,25 @@
 package orderproduct;
 
 
+import database.DB;
 import group.Group;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import order.Order;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import product.ProductService;
-
-
-import servlet.OrderServlet;
 import user.User;
 import user.UserManager;
 import utill.NumbleUtill;
 import utill.StringUtill;
 import utill.TimeUtill;
-import database.DB;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
   
 public class OrderProductManager {
 
@@ -38,7 +28,7 @@ public class OrderProductManager {
 	   public static int updateOrderStatues(User user, String categoryid ,String type ,String count ,String oid){
 		   int statues = -1 ; 
 		   if(UserManager.checkPermissions(user, Group.dealSend)){
-			   Connection conn = DB.getConn();  
+			   Connection conn = DB.getInstance().getConn();
 			   if(!NumbleUtill.isNumeric(type)){
 				   type = ProductService.gettypemap().get(type).getId()+"";
 			   }
@@ -106,7 +96,7 @@ public class OrderProductManager {
 	   
 	   public static int getMaxid(){
 		   int id = 0 ;
-		   Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 			String  sql = "select max(id)+1 as id from mdorderstatues" ;
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -136,8 +126,8 @@ public class OrderProductManager {
 		   List<OrderProduct> products = new ArrayList<OrderProduct>();
 		    
 		   String sql = "select * from mdorderproduct where orderid in (select id from  mdorder where  mdorder.saleID in (select id from mduser where mduser.usertype in (select id from mdgroup where pid = "+user.getUsertype()+"))   and printSatues = 1 and (sendId != 0 or installid != 0 ) and deliveryStatues not in (0,3,8,9,10)  "+search+") and statues = 0  and chargeDealsendtime is null order by "+sort+str; ;
-		   logger.info(sql); 
-		   Connection conn = DB.getConn();
+		   logger.info(sql);
+		   Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 		   ResultSet rs = DB.getResultSet(stmt, sql);
 			try {  
@@ -160,8 +150,8 @@ public class OrderProductManager {
 		  int count = 0 ;
 		     
 		   String sql = "select count(*) from mdorderproduct where orderid in (select id from  mdorder where  mdorder.saleID in (select id from mduser where mduser.usertype in (select id from mdgroup where pid = "+user.getUsertype()+"))   and printSatues = 1 and (sendId != 0 or installid != 0 ) and deliveryStatues not in (0,3,8,9,10)  "+search+") and statues = 0  and chargeDealsendtime is null  order by "+sort;
-		   logger.info(sql); 
-		   Connection conn = DB.getConn();
+		   logger.info(sql);
+		   Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 		   ResultSet rs = DB.getResultSet(stmt, sql);
 			try {  
@@ -181,7 +171,7 @@ public class OrderProductManager {
 	   public static List<OrderProduct> getOrderStatues(User user ,int id){
 		   
 		   List<OrderProduct> Orders = new ArrayList<OrderProduct>();
-			    Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 				Statement stmt = DB.getStatement(conn);
 				String sql = "select * from  mdorderproduct where orderid = "  + id;
 				logger.info(sql);
@@ -204,7 +194,7 @@ public class OrderProductManager {
 	   //author wilsonlee
 	   public static List<OrderProduct> getOrderStatuesMByOrderID(int orderID){
 		   List<OrderProduct> list = new ArrayList<OrderProduct>();
-		    Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 			String sql = "select * from  mdorderproduct where orderid = " + String.valueOf(orderID);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -226,7 +216,7 @@ public class OrderProductManager {
         public static Map<Integer,List<OrderProduct>> getOrderStatuesM(){
 		   
         	    Map<Integer,List<OrderProduct>> Orders = new HashMap<Integer,List<OrderProduct>>();
-			    Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 				Statement stmt = DB.getStatement(conn);
 				String sql = "select * from  mdorderproduct ";
 				ResultSet rs = DB.getResultSet(stmt, sql);

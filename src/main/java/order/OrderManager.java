@@ -26,7 +26,7 @@ public class OrderManager {
 
     public static int updatePrint2(int statues, String id, String pid) {
         int flag = -1;
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         //insert into  mdgroup( id ,groupname, detail,statues, permissions, products) VALUES (null,?,?,?,?,?)";
         String sql = "update mdorder set printSatues= ? , printlnid = " + pid + " where id = " + id;
         PreparedStatement pstmt = DB.prepare(conn, sql);
@@ -73,7 +73,7 @@ public class OrderManager {
 
     public static int updateMessage(String phone1, String andate, String locations, String oid) {
         int flag = -1;
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         if (StringUtill.isNull(andate)) {
             andate = null;
         }
@@ -276,7 +276,7 @@ public class OrderManager {
     // 第一次配单
     public static int updatePeidan(int statues, int id) {
         int count = 0;
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         //insert into  mdgroup( id ,groupname, detail,statues, permissions, products) VALUES (null,?,?,?,?,?)";
         String sql = "update mdorder set dealSendid = ? where id = " + id;
 
@@ -297,7 +297,7 @@ public class OrderManager {
 
     public static boolean getName(String method, String c, String branch) {
         boolean flag = false;
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         String sql = "";
         if ("phone1".equals(method)) {
             //sql = "select * from mdorder where "+method+"  = '"+ c+ "'  and orderbranch = '"+branch+"' and  (TIMESTAMPDIFF(DAY,saledate,now()) <= 5)";
@@ -326,7 +326,7 @@ public class OrderManager {
     // 判断是不是顶码
     public static boolean Check(int oid) {
         boolean flag = false;
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
 
 
         String sql = "select * from mdorderproduct where statues = 1 and orderid = " + oid;
@@ -351,7 +351,7 @@ public class OrderManager {
 
     public static void updateSendstat(int statues, int sid, int oid) {
 
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
 
 
         //insert into  mdgroup( id ,groupname, detail,statues, permissions, products) VALUES (null,?,?,?,?,?)";
@@ -372,7 +372,7 @@ public class OrderManager {
     // select top 1 * from table order by id desc
     public static int getMaxid() {
         int id = 1;
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         Statement stmt = DB.getStatement(conn);
         String sql = "select max(id)+1 as id from mdorder";
         ResultSet rs = DB.getResultSet(stmt, sql);
@@ -394,7 +394,7 @@ public class OrderManager {
 
     public static Order getMaxOrder() {
         Order order = null;
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         Statement stmt = DB.getStatement(conn);
         //  select top 1 * from table order by id desc
         // select * from table where id in (select max(id) from table)
@@ -421,7 +421,7 @@ public class OrderManager {
             return flag;
         }
 
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         Statement stmt = DB.getStatement(conn);
         String sql = "select id from mdorder where id = " + id;
         logger.info(sql);
@@ -774,7 +774,7 @@ public class OrderManager {
             }
         }
         logger.info(sql);
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         Statement stmt = DB.getStatement(conn);
 
         ResultSet rs = DB.getResultSet(stmt, sql);
@@ -957,7 +957,7 @@ public class OrderManager {
         }
         logger.info(sql);
 
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         Statement stmt = DB.getStatement(conn);
         ResultSet rs = DB.getResultSet(stmt, sql);
         try {
@@ -986,7 +986,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 0 and statuesChargeSale is null and oderStatus not in (20)  and saledate <= '" + time + "'  order by orderbranch";
 
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1019,7 +1019,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is null and oderStatus not in (20)  and saledate <= '" + time + "'  order by orderbranch";
 
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1045,7 +1045,7 @@ public class OrderManager {
     public static List<Order> getOrdersBySql(String sql) {
         List<Order> Orders = new ArrayList<Order>();
 
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         Statement stmt = DB.getStatement(conn);
         ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1077,7 +1077,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statues3 = 0 and oderStatus not in (20)  order by orderbranch";
 
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1108,7 +1108,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is not null and oderStatus not in (20) and saledate <= '" + time + "'  order by orderbranch";
 
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1138,7 +1138,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statues3 = 1 and oderStatus not in (20) order by orderbranch";
 
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1176,7 +1176,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 0 and statuesChargeSale is null  and oderStatus not in (20) and orderbranch in (" + branchid + ")  and saledate <= '" + time + "' order by orderbranch";
         // logger.info(sql);
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1205,7 +1205,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 0 and statuesChargeSale is null and oderStatus not in (20)  and orderbranch in (select id from mdbranch where pid in ( " + branchid + ")) and saledate <= '" + time + "'  order by orderbranch";
 
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1234,7 +1234,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is null  and oderStatus not in (20) and orderbranch in (" + branchid + ")  and saledate <= '" + time + "' order by orderbranch";
         // logger.info(sql);
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1263,7 +1263,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is null and oderStatus not in (20)  and orderbranch in (select id from mdbranch where pid in ( " + branchid + ")) and saledate <= '" + time + "'  order by orderbranch";
 
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1292,7 +1292,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is not null and oderStatus not in (20)  and orderbranch in (select id from mdbranch where pid in ( " + branchid + ")) and saledate <= '" + time + "' order by orderbranch ";
 
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1320,7 +1320,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where id in (" + ids + ")";
 
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1349,7 +1349,7 @@ public class OrderManager {
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is not null and oderStatus not in (20)  and orderbranch in ( " + branchid + ") and saledate <= '" + time + "'  order by orderbranch";
 
         if (true) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             Statement stmt = DB.getStatement(conn);
             ResultSet rs = DB.getResultSet(stmt, sql);
 
@@ -1376,7 +1376,7 @@ public class OrderManager {
         sql = "select * from  mdorder where id = " + id;
 
         logger.info(sql);
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         Statement stmt = DB.getStatement(conn);
         ResultSet rs = DB.getResultSet(stmt, sql);
         try {
@@ -1409,7 +1409,7 @@ public class OrderManager {
         Map<String, Order> orders = new HashMap<String, Order>();
         String sql = "select * from  mdorder where id in (" + id + ")";
         logger.info(sql);
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         Statement stmt = DB.getStatement(conn);
         ResultSet rs = DB.getResultSet(stmt, sql);
         try {
@@ -1510,7 +1510,7 @@ public class OrderManager {
 
     public static boolean deleteed(int id) {
         boolean b = false;
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         String sql = "update mdorder set deliveryStatues = 3 where id = " + id;
         Statement stmt = DB.getStatement(conn);
         try {
@@ -1612,7 +1612,7 @@ public class OrderManager {
 
     public boolean updateOrder(User user, Order order) {
         if (user.getUsertype() == 2 && user.getId() == order.getSaleID()) {
-            Connection conn = DB.getConn();
+            Connection conn = DB.getInstance().getConn();
             String sql = "update mdorder set productCategory = ?, productType = ? , locate = ?" +
                     ", locateDetail = ?, date = ?, time = ?, saleID = ?" +
                     ", saleTime = ?, printSatues = ?, mail = ?,oderStatus = ?";

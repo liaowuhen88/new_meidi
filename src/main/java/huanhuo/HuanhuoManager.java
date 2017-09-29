@@ -1,27 +1,22 @@
 package huanhuo;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import database.DB;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
- 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import database.DB;
   
 public class HuanhuoManager {
 	
 	 protected static Log logger = LogFactory.getLog(HuanhuoManager.class);
 	
 	 public static boolean  save(HuanHuo huanhuo ){
-		  
-		Connection conn = DB.getConn(); 
+
+		 Connection conn = DB.getInstance().getConn();
 		String sql = "insert into mdhuanhuo(id,orderid,uid,type,statues) values (null,?,?,?,?)";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try {   	
@@ -41,8 +36,8 @@ public class HuanhuoManager {
 	
 
 		public static int update(String bid,String statues ) {
-		    int id = 0 ; 
-			Connection conn = DB.getConn();  
+		    int id = 0 ;
+			Connection conn = DB.getInstance().getConn();
 			String sql = " update mdhuanhuo set statues = ? where id = ?";
 			PreparedStatement pstmt = DB.prepare(conn, sql);
 			try {   
@@ -59,8 +54,8 @@ public class HuanhuoManager {
 		} 
 		
 		public static HuanHuo getLocatebyid(String ids ) {
-			HuanHuo HuanHuo = new HuanHuo();  
-			Connection conn = DB.getConn(); 
+			HuanHuo HuanHuo = new HuanHuo();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdhuanhuo where id in "+ ids ;
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -82,7 +77,7 @@ public class HuanhuoManager {
 		
 		public static Map<Integer,HuanHuo> getNameMap() {
 			Map<Integer,HuanHuo> map = new HashMap<Integer,HuanHuo>();
-			Connection conn = DB.getConn(); 
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdhuanhuo ";
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -103,7 +98,7 @@ public class HuanhuoManager {
 		
 		public static Map<String,List<HuanHuo>> getOidMapHuanHuo() {
 			Map<String,List<HuanHuo>> map = new HashMap<String,List<HuanHuo>>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdhuanhuo ";
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -129,8 +124,8 @@ public class HuanhuoManager {
 		}
 		
 		public static boolean delete(String ids ) {
-			boolean b = false;   
-			Connection conn = DB.getConn();  
+			boolean b = false;
+			Connection conn = DB.getInstance().getConn();
 			String sql = "delete mdhuanhuo  where id in " + ids;
 logger.info(sql); 
 			Statement stmt = DB.getStatement(conn);
@@ -146,7 +141,7 @@ logger.info(sql);
 		 
 		public static boolean isname(String name){
 			boolean flag = false ;
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdHuanHuo where bname = '"+ name +"'";
 			logger.info(sql);
 			Statement stmt = DB.getStatement(conn); 

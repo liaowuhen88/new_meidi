@@ -1,5 +1,11 @@
 package installsale;
 
+import company.CompanyManager;
+import database.DB;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import utill.DBUtill;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,15 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import java.util.Map; 
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import utill.DBUtill;
-
-import company.CompanyManager;
-import database.DB;
+import java.util.Map;
 
 public class InstallSaleManager {
 	 protected static Log logger = LogFactory.getLog(CompanyManager.class);
@@ -55,8 +53,8 @@ public class InstallSaleManager {
 		 } 
 	  
 	 public static int getmaxid(){
-		    int count = 0 ; 
-		    Connection conn = DB.getConn();
+		    int count = 0 ;
+		 Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 		
 			String  sql = "select max(id) as id from installsale" ;
@@ -76,8 +74,8 @@ public class InstallSaleManager {
 	 } 
 	 
 	 public static Map<String,InstallSale> getmap(int chargetype){ 
-		    HashMap<String,InstallSale> map = new HashMap<String,InstallSale>(); 
-			Connection conn = DB.getConn();     
+		    HashMap<String,InstallSale> map = new HashMap<String,InstallSale>();
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "select * from installsale where type = "+chargetype;   
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -98,8 +96,8 @@ public class InstallSaleManager {
 	 }
 	  
 	 public static InstallSale getInstallSale(String id){
-		    InstallSale in = null; 
-			Connection conn = DB.getConn();    
+		    InstallSale in = null;
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "select * from installsale where id = "+id;  
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);

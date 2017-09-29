@@ -1,5 +1,7 @@
 package saledealsend;
 
+import database.DB;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,12 +9,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import database.DB;
-
 public class SaladealsendMessageManager { 
    public static List<SaledealsendMessage> getlistByid(Saledealsend sa){
 	   List<SaledealsendMessage> list = null;
-	    Connection conn = DB.getConn();    
+	   Connection conn = DB.getInstance().getConn();
 		String sql = "select * from saledealsendmessage where saledealsendID = " + sa.getId() ;  
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);

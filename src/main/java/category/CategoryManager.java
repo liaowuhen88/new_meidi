@@ -1,21 +1,16 @@
 package category;
-import group.Group; 
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import database.DB;
+import group.Group;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import user.User;
+import user.UserManager;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import user.User;
-import user.UserManager;
-import database.DB;
   
 public class CategoryManager { 
 	 protected static Log logger = LogFactory.getLog(CategoryManager.class);
@@ -29,7 +24,7 @@ public class CategoryManager {
 	           }
 			} 
 			if(flag){
-				Connection conn = DB.getConn();
+				Connection conn = DB.getInstance().getConn();
 				String sql = "insert into mdcategory values (null, ?,null)";
 				PreparedStatement pstmt = DB.prepare(conn, sql);
 				try {
@@ -50,7 +45,7 @@ logger.info(category.getName());
 		
         public static boolean getName(String c){
         	boolean flag = false ;
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdcategory where categoryname = '"+ c+ "' and cstatues = 0";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -69,7 +64,7 @@ logger.info(category.getName());
         }
          
 		public static boolean  save(Category c){
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "insert into mdcategory(id,categoryname,pid,time,cstatues) values (null, ?,null,?,0)";
 			PreparedStatement pstmt = DB.prepare(conn, sql);
 			try {
@@ -89,7 +84,7 @@ logger.info(category.getName());
 		public  static boolean setStatues(int id , int statues){
 			boolean flag = false ;
 			String sql = "update mdcategory set cstatues = "+statues + "  where id = " + id;
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 			
 			try {   
@@ -106,7 +101,7 @@ logger.info(category.getName());
 		
 		public static List<Category> getCategory() {
 			List<Category> categorys = new ArrayList<Category>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdcategory ";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -128,7 +123,7 @@ logger.info(category.getName());
 		// 获取在售的产品
 		public static List<Category> getCategory(int statues) {
 			List<Category> categorys = null;
-			Connection conn = DB.getConn(); 
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdcategory where cstatues = "+ statues;
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -155,7 +150,7 @@ logger.info(category.getName());
 		public static List<Category> getCategory(User user,int statues) {
 			 
 			List<Category> categorys = new ArrayList<Category>();
-			Connection conn = DB.getConn(); 
+			Connection conn = DB.getInstance().getConn();
 			String[] products = UserManager.getProducts(user);	 
 		    String str = "(";
 			for(int i=0;i<products.length;i++){
@@ -192,7 +187,7 @@ logger.info(category.getName());
 		// 通过id获取
 		public static Category getCategory(String id) {
 			Category u = new Category();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdcategory where id = "+ id;
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -211,7 +206,7 @@ logger.info(e);
 		}
 		public static HashMap<Integer,Category> getCategoryMap() {
 			HashMap<Integer,Category> categorys = new HashMap<Integer,Category>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdcategory ";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -232,7 +227,7 @@ logger.info(e);
 		
 		public static HashMap<String,Category> getCategoryMapStr() {
 			HashMap<String,Category> categorys = new HashMap<String,Category>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdcategory ";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -253,7 +248,7 @@ logger.info(e);
 		
 		public static HashMap<String,List<Category>> getCategoryMapType() {
 			HashMap<String,List<Category>> map = new HashMap<String,List<Category>>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdcategory ";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -288,7 +283,7 @@ logger.info(e);
 
 			int totalRecords = -1;
 
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mduser limit " + (pageNo - 1) * pageSize
 					+ "," + pageSize;
 			Statement stmt = DB.getStatement(conn);
@@ -322,7 +317,7 @@ logger.info(e);
 		public static boolean delete(String str ) {
 			String ids = "(" + str + ")";
 			boolean b = false;
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "delete from mdcategory where id in " + ids;
 logger.info(sql);
 			Statement stmt = DB.getStatement(conn);
@@ -340,7 +335,7 @@ logger.info(sql);
 		public static Category check(String username, String password)
 				 {
 			Category u = null;
-			Connection conn = DB.getConn();
+					 Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mduser where name = '" + username + "'";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -369,7 +364,7 @@ logger.info(sql);
 		
 		public static boolean update(Category user) {
 			boolean flag = false ;
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "update mdcategory set categoryname = ?, time = ? where id = ?";
 			PreparedStatement pstmt = DB.prepare(conn, sql);
 			try {

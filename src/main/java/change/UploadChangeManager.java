@@ -17,9 +17,9 @@ import java.sql.Statement;
 import java.util.*;
 
 public class UploadChangeManager {
-	protected static Log logger = LogFactory.getLog(UploadChangeManager.class);
 	public static int count = 0;
-    
+	protected static Log logger = LogFactory.getLog(UploadChangeManager.class);
+
 	public static void save(String name ,String filename ,int statues){
 		if(!StringUtill.isNull(name) && !StringUtill.isNull(filename)){
 			String sql = " insert ignore into  mduploadchange (id,filename,name,statues) values (null,'"
@@ -69,7 +69,7 @@ public class UploadChangeManager {
 	public static UploadChangeAll getUnCheckedUploadOrders(String filename) {
 		UploadChangeAll all = new UploadChangeAll();
 
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mduploadchange where filename = '"
 				+ filename + "'";
 		logger.info(sql);
@@ -98,8 +98,8 @@ public class UploadChangeManager {
    
 	public static UploadChangeAll getUnCheckedString(String filename) {
 		UploadChangeAll all = new UploadChangeAll();
- 
-		Connection conn = DB.getConn();
+
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mduploadchange where filename = '"
 				+ filename + "'";
 		logger.info(sql);
@@ -127,7 +127,7 @@ public class UploadChangeManager {
 	public static List<UploadChange> getUnCheckedUploadOrders() {
 		List<UploadChange> list = new ArrayList<UploadChange>();
 
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mduploadchange ";
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);

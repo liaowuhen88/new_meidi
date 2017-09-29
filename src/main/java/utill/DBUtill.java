@@ -11,9 +11,9 @@ public class DBUtill {
   protected static Log logger = LogFactory.getLog(DBUtill.class);
    
   public synchronized static boolean sava(List<String> sqls){
-		    boolean flag = false ; 
-		    Connection conn = DB.getConn();    
-		    Statement sm = null;  
+		    boolean flag = false ;
+	  Connection conn = DB.getInstance().getConn();
+	  Statement sm = null;
 	        try {     
 	          // 事务开始   
 		          logger.info("事物处理开始") ;
@@ -58,9 +58,9 @@ public class DBUtill {
   
   
   public synchronized static int savaReturnInt(List<String> sqls){ 
-	  int count = 0 ; 
-	    Connection conn = DB.getConn();    
-	    Statement sm = null;  
+	  int count = 0 ;
+	  Connection conn = DB.getInstance().getConn();
+	  Statement sm = null;
       try {     
           // 事务开始   
           logger.info("事物处理开始") ;
@@ -104,8 +104,8 @@ public class DBUtill {
   }
   
   
-  public synchronized static boolean sava(String sql){ 
-	   Connection conn = DB.getConn();  
+  public synchronized static boolean sava(String sql){
+	  Connection conn = DB.getInstance().getConn();
 	   
 		    
 		PreparedStatement pstmt = DB.prepare(conn, sql);

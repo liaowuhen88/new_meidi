@@ -1,14 +1,13 @@
 package wilson.android.support;
 
+import database.DB;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import database.DB;
 
 public class DataManager {
 	
@@ -24,7 +23,7 @@ public class DataManager {
 	 */
 	public static String login(String username, String password){
 		String result = "";
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mduser where username = '" + username + "' and statues = 1;";
 		logger.info(sql); 
 		Statement stmt = DB.getStatement(conn); 

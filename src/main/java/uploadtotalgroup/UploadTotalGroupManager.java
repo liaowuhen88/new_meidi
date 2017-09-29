@@ -1,19 +1,16 @@
 package uploadtotalgroup;
 
+import database.DB;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import utill.DBUtill;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import utill.DBUtill;
-
-
-import database.DB;
 
 public class UploadTotalGroupManager {
 	protected static Log logger = LogFactory.getLog(UploadTotalGroupManager.class);
@@ -53,8 +50,8 @@ public class UploadTotalGroupManager {
 		 }*/ 
 	  
 	 public static UploadTotalGroup getUploadTotalGroup(){
-		 UploadTotalGroup in = null; 
-			Connection conn = DB.getConn();    
+		 UploadTotalGroup in = null;
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mduploadtotalgroup";  
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);

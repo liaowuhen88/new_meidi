@@ -26,8 +26,8 @@ import java.util.*;
 import java.util.Date;
 
 public class UploadManager {
-	private static XLSReader xlsreader = new XLSReader();
 	protected static Log logger = LogFactory.getLog(UploadManager.class);
+	private static XLSReader xlsreader = new XLSReader();
 	
 	public static boolean saveSalaryFileToDB(String path,String fileName){
 		List <UploadSalaryModel> uploadSalaryModelList = new ArrayList<UploadSalaryModel>();
@@ -99,8 +99,8 @@ public class UploadManager {
 		if(input.endsWith("_")){
 			input = input.substring(0,input.length()-1);
 		}
-		
-		Connection conn = DB.getConn();
+
+		Connection conn = DB.getInstance().getConn();
 		String sql = "update uploadorder set shop = ? where id = ?";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try {
@@ -170,10 +170,9 @@ public class UploadManager {
 			uploadOrderMap = UploadManager.getUploadOrderMapByIds(up_ids);
 			orderMap = OrderManager.getOrdermapByIds(user, db_ids);
 			//(结束)
-			
-			
-			
-			Connection conn = DB.getConn();
+
+
+			Connection conn = DB.getInstance().getConn();
 			String sql = "update uploadorder set salesman = ? where id = ?";
 			PreparedStatement pstmt = DB.prepare(conn, sql);
 			try {
@@ -253,10 +252,9 @@ public class UploadManager {
 			tmp.add(type_transList.get(i));
 		}
 		request.getSession().setAttribute("type_transList", null);
-				
-		
-		
-		Connection conn = DB.getConn();
+
+
+		Connection conn = DB.getInstance().getConn();
 		String sql = "update uploadorder set salesman = ? where id = ?";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 
@@ -408,7 +406,7 @@ public class UploadManager {
 	
 	public static boolean checkUploadOrder(int uploadOrderId){
 		boolean flag = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "update uploadorder set checked = ? ,checkedtime = ? ,checkorderid= ? where id = " + uploadOrderId;
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		SimpleDateFormat fmt=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -451,7 +449,7 @@ public class UploadManager {
 	
 	public static boolean confirmUploadOrderStrList(String uploadOrderIdStrList){
 		boolean flag = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "update uploadorder set checked = ? where id in (" + uploadOrderIdStrList + ")" ;
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try {
@@ -473,7 +471,7 @@ public class UploadManager {
 	
 	public static boolean checkUploadOrderStrList(String uploadOrderIdStrList){
 		boolean flag = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "update uploadorder set checked = ? ,checkedtime = ? ,checkorderid= ? where id in (" + uploadOrderIdStrList + ")" ;
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		SimpleDateFormat fmt=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -498,7 +496,7 @@ public class UploadManager {
 	
 	public static boolean checkOrder(User user ,int uploadOrderId,int dbOrderId,String checkName){
 		boolean flag = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "update uploadorder set checked = ? ,checkedtime = ? ,checkorderid= ? where id = " + uploadOrderId;
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		SimpleDateFormat fmt=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -542,7 +540,7 @@ public class UploadManager {
 		int DBOrderID;
 		int UploadOrderID;
 		boolean flag = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		
 		List<String> uploadIds = new ArrayList<String>();
 		List<String> dbIds = new ArrayList<String>();
@@ -601,8 +599,8 @@ public class UploadManager {
 	
 	public static boolean saveOrderList(List <UploadOrder> UploadOrders){
 		String sql = ""; 
-		sql = "insert into uploadorder (id,name,salesman,shop,posno,saletime,type,num,saleprice,backpoint,filename,uploadtime,checked,checkedtime,checkorderid) VALUES (null,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";	
-		Connection conn = DB.getConn();
+		sql = "insert into uploadorder (id,name,salesman,shop,posno,saletime,type,num,saleprice,backpoint,filename,uploadtime,checked,checkedtime,checkorderid) VALUES (null,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		Connection conn = DB.getInstance().getConn();
 		SimpleDateFormat fmt=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		PreparedStatement pstmt = DB.prepare(conn, sql);
@@ -643,8 +641,8 @@ public class UploadManager {
 	public static boolean saveUploadOrder(UploadOrder uploadOrder){
 		boolean result = false;
 		String sql = ""; 
-		sql = "update uploadorder set shop=?,posno=?,saletime=?,type=?,num=?,saleprice=? where id = " + uploadOrder.getId();	
-		Connection conn = DB.getConn();
+		sql = "update uploadorder set shop=?,posno=?,saletime=?,type=?,num=?,saleprice=? where id = " + uploadOrder.getId();
+		Connection conn = DB.getInstance().getConn();
 		
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try {
@@ -669,8 +667,8 @@ public class UploadManager {
 	
 	public static boolean saveSalaryModelList(List<UploadSalaryModel> uploadSalaryModelList) {
 		boolean flag = false;
-		String sql = "insert into uploadsalarymodel (id,shop,name,starttime,endtime,catergory,type,content,committime,filename,status) VALUES (null,?,?,?,?,?,?,?,?,?,0)";	
-		Connection conn = DB.getConn();
+		String sql = "insert into uploadsalarymodel (id,shop,name,starttime,endtime,catergory,type,content,committime,filename,status) VALUES (null,?,?,?,?,?,?,?,?,?,0)";
+		Connection conn = DB.getInstance().getConn();
 		SimpleDateFormat fmt=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		PreparedStatement pstmt = DB.prepare(conn, sql);
@@ -708,8 +706,8 @@ public class UploadManager {
 		
 		//id为-1时，新增
 		if(uploadSalary.getId() == -1){
-			String sql = "insert into uploadsalarymodel VALUES (null,?,?,?,?,?,?,?,?,?,0)";	
-			Connection conn = DB.getConn();
+			String sql = "insert into uploadsalarymodel VALUES (null,?,?,?,?,?,?,?,?,?,0)";
+			Connection conn = DB.getInstance().getConn();
 			SimpleDateFormat fmt=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 			PreparedStatement pstmt = DB.prepare(conn, sql);
@@ -736,8 +734,8 @@ public class UploadManager {
 			}
 		}else{
 		//id不为-1的时候，为修改
-			String sql = "update uploadsalarymodel set shop=?,name=?,starttime=?,endtime=?,catergory=?,type=?,content=?,committime=?,filename=?,status=? where id = " + uploadSalary.getId();	
-			Connection conn = DB.getConn();
+			String sql = "update uploadsalarymodel set shop=?,name=?,starttime=?,endtime=?,catergory=?,type=?,content=?,committime=?,filename=?,status=? where id = " + uploadSalary.getId();
+			Connection conn = DB.getInstance().getConn();
 
 			PreparedStatement pstmt = DB.prepare(conn, sql);
 			try {
@@ -793,7 +791,7 @@ public class UploadManager {
 	public static List<String> getUnconfirmedUploadOrderNames(){
 		List <String> unConfirmedUploadOrderNames = new ArrayList<String>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select DISTINCT name from uploadorder where checked = " + UploadOrder.COMPARE_DEFAULT;
 
 		Statement stmt = DB.getStatement(conn); 
@@ -829,7 +827,7 @@ public class UploadManager {
 	public static List<UploadOrder> getUnCheckedUploadOrders(){
 		List <UploadOrder> unCheckedUploadOrders = new ArrayList<UploadOrder>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadorder where checked = " + UploadOrder.UNCHECK +  " or checked = " + UploadOrder.COMFIRMED + " order by shop";
 
 		Statement stmt = DB.getStatement(conn);  
@@ -854,7 +852,7 @@ public class UploadManager {
 	public static List<UploadOrder> getCheckedUploadOrders(){
 		List <UploadOrder> checkedUploadOrders = new ArrayList<UploadOrder>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadorder where checked = 0 order by shop";
 
 		Statement stmt = DB.getStatement(conn); 
@@ -879,7 +877,7 @@ public class UploadManager {
 	public static List<String> getCalcedUploadOrdersNames(){
 		List <String> result = new ArrayList<String>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select distinct name from uploadorder where checked = 2 order by shop";
 
 		Statement stmt = DB.getStatement(conn); 
@@ -904,7 +902,7 @@ public class UploadManager {
 	public static List<String> getCheckedUploadOrdersNames(){
 		List <String> result = new ArrayList<String>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select distinct name from uploadorder where checked = 0 order by shop";
 
 		Statement stmt = DB.getStatement(conn); 
@@ -929,7 +927,7 @@ public class UploadManager {
 	public static List<String> getUnTotalUploadOrdersNames(){
 		List <String> result = new ArrayList<String>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select distinct name from uploadorder where dealtime is null order by shop";
 
 		Statement stmt = DB.getStatement(conn); 
@@ -954,7 +952,7 @@ public class UploadManager {
 	public static List<UploadOrder> getTotalUploadOrders(String id){
 		Map<Integer,UploadOrder> map= new TreeMap();
 
-		Connection conn = DB.getConn();  
+		Connection conn = DB.getInstance().getConn();
 		String str = "";
 		if(isBackUped(id)){
 			str = "  and  checked =  5";
@@ -990,7 +988,7 @@ public class UploadManager {
 	public static List<UploadOrder> getTotalUploadOrders(String id,String statues,int totaltype){
 		Map<Integer,UploadOrder> map= new TreeMap();
 
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String search = "";
 		if(!StringUtill.isNull(statues)){
 			if(Integer.valueOf(statues) == 1){
@@ -1588,7 +1586,7 @@ public class UploadManager {
 	public static UploadOrder getUploadOrderById(int id){
 		UploadOrder result = new UploadOrder();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadorder where id = " + id;
 
 		Statement stmt = DB.getStatement(conn); 
@@ -1611,8 +1609,8 @@ public class UploadManager {
 	
 	public static Map<String,UploadOrder> getUploadOrderMapByIds(String ids){
 		Map<String,UploadOrder> result = new HashMap<String,UploadOrder>();
-		
-		Connection conn = DB.getConn(); 
+
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadorder where id in ( " + ids + " )";
 
 		Statement stmt = DB.getStatement(conn); 
@@ -1638,7 +1636,7 @@ public class UploadManager {
 		List <AfterMatchOrder> checkedAfterMatchOrder = new ArrayList<AfterMatchOrder>();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadorder where checked = 0 and saletime > " + sdf.format(startDate)  + " and saletime < " + sdf.format(endDate);
 
 		Statement stmt = DB.getStatement(conn); 
@@ -1681,7 +1679,7 @@ public class UploadManager {
 	public static List<UploadSalaryModel> getAllSalaryModel(){
 		List<UploadSalaryModel> result = new ArrayList<UploadSalaryModel>();
 		String sql = "select * from uploadsalarymodel where status != " + UploadSalaryModel.DELETE;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		UploadSalaryModel usm = new UploadSalaryModel();
@@ -1732,7 +1730,7 @@ public class UploadManager {
 	public static List<String> getAllSalaryModelNames(){
 		List<String> result = new ArrayList<String>();
 		String sql = "select distinct name from uploadsalarymodel where status != " + UploadSalaryModel.DELETE;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		String tmp = "";
@@ -1756,7 +1754,7 @@ public class UploadManager {
 	public static List<String> getAllChangeModelNames(){
 		List<String> result = new ArrayList<String>();
 		String sql = "select distinct filename from mduploadchange ";
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		String tmp = ""; 
@@ -1797,7 +1795,7 @@ public class UploadManager {
 	public static List<UploadOrder> getOrdersByName(String name){
 		List <UploadOrder> result = new ArrayList<UploadOrder>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadorder where name = '" + name + "' and checked != " + UploadOrder.ORIGIN  +" order by id";
 		logger.info(sql);
 		Statement stmt = DB.getStatement(conn); 
@@ -1821,7 +1819,7 @@ public class UploadManager {
 	public static List<UploadOrder> getUnComfirmedUploadOrdersByName(String name){
 		List <UploadOrder> result = new ArrayList<UploadOrder>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadorder where checked = " + UploadOrder.COMPARE_DEFAULT + " and name = '" + name + "' order by shop" ;
 		logger.info(sql);
 		Statement stmt = DB.getStatement(conn); 
@@ -1846,7 +1844,7 @@ public class UploadManager {
 	public static List<UploadOrder> getUnCheckedUploadOrdersByName(String name){
 		List <UploadOrder> result = new ArrayList<UploadOrder>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadorder where (checked = " + UploadOrder.UNCHECK + " or checked = " + UploadOrder.COMFIRMED + " )and name = '" + name + "' order by shop" ;
 		logger.info(sql);
 		Statement stmt = DB.getStatement(conn); 
@@ -1871,7 +1869,7 @@ public class UploadManager {
 	public static List<UploadOrder> getCheckedUploadOrdersByName(String name){
 		List <UploadOrder> result = new ArrayList<UploadOrder>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadorder where checked = 0 and name = '" + name + "' order by shop" ;
 		logger.info(sql);
 		Statement stmt = DB.getStatement(conn); 
@@ -1897,7 +1895,7 @@ public class UploadManager {
 	public static List<UploadOrder> getCheckedOrdersByName(String name){
 		List <UploadOrder> result = new ArrayList<UploadOrder>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadorder where name = '" + name + "' and checked = 0 order by name,shop";
 		logger.info(sql);
 		Statement stmt = DB.getStatement(conn); 
@@ -1922,7 +1920,7 @@ public class UploadManager {
 	public static Map<String,UploadSalaryModel> getSalaryModelsAll(){
 		Map<String,UploadSalaryModel> result = new HashMap<String,UploadSalaryModel>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadsalarymodel where  status != " + UploadSalaryModel.DELETE + " order by name";
 
 		Statement stmt = DB.getStatement(conn); 
@@ -1957,7 +1955,7 @@ public class UploadManager {
 	public static List<String> getSalaryModelsCategoryAll(){
 		List<String> list = new ArrayList<String>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select catergory from uploadsalarymodel where  status != " + UploadSalaryModel.DELETE + " group by catergory";
 
 		Statement stmt = DB.getStatement(conn); 
@@ -1979,7 +1977,7 @@ public class UploadManager {
 	public static List<UploadSalaryModel> getSalaryModelsByName(String name){
 		List <UploadSalaryModel> result = new ArrayList<UploadSalaryModel>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadsalarymodel where name = '" + name + "' and status != " + UploadSalaryModel.DELETE + " order by name";
 
 		Statement stmt = DB.getStatement(conn); 
@@ -2024,9 +2022,9 @@ public class UploadManager {
 		if(nameSTR.endsWith(",")){
 			nameSTR = nameSTR.substring(0,nameSTR.length() -1);
 		}
-		
 
-		Connection conn = DB.getConn(); 
+
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadsalarymodel where name in (" + nameSTR + ") and status != " +  UploadSalaryModel.DELETE +  "  order by name";
 
 		Statement stmt = DB.getStatement(conn); 
@@ -2060,8 +2058,8 @@ public class UploadManager {
 	
 	public static UploadSalaryModel getSalaryModelsById(int id){
 		UploadSalaryModel result = new UploadSalaryModel();
-		
-		Connection conn = DB.getConn(); 
+
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadsalarymodel where id = " + id  +" and status != -1";
 
 		Statement stmt = DB.getStatement(conn); 
@@ -2094,7 +2092,7 @@ public class UploadManager {
 		List<String> result = new ArrayList<String>();
 		
 		List<String> temp = new ArrayList<String>();
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select DISTINCT name from uploadorder where checked = " + under_status;
 		
 		Statement stmt = DB.getStatement(conn); 
@@ -2138,7 +2136,7 @@ public class UploadManager {
 	public static List<UploadOrder> getAllUploadOrders(){
 		List<UploadOrder> result = new ArrayList<UploadOrder>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from uploadorder where checked != -1";
 
 		Statement stmt = DB.getStatement(conn); 
@@ -2161,7 +2159,7 @@ public class UploadManager {
 	}
 	public static boolean deleteDeprecateSalaryModels(){
 		boolean result = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		ResultSet rs = null;
 		Statement stmt = null;
 		String ids = "";
@@ -2200,7 +2198,7 @@ public class UploadManager {
 		
 		//加trasaction 删除salaryResult里面记录
 		boolean flag = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		ResultSet rs = null;
 		Statement stmt = null;
 		String ids = "";
@@ -2252,7 +2250,7 @@ public class UploadManager {
 	}
 	public static boolean deleteSalaryModelByName(String name){
 		boolean flag = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		
 		String sql = "update uploadsalarymodel set name = '',status =  " + UploadSalaryModel.DELETE  + " where name = '" + name + "'";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
@@ -2271,7 +2269,7 @@ public class UploadManager {
 	
 	public static boolean deleteChangeModelByName(String name){
 		boolean flag = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		   
 		String sql = "delete from  mduploadchange where filename = '"+name+"'"; 
 		logger.info(sql); 
@@ -2290,8 +2288,8 @@ public class UploadManager {
 	}
 	
 	public static boolean deleteSalaryModelById(int id){
-		boolean flag = false; 
-		Connection conn = DB.getConn();
+		boolean flag = false;
+		Connection conn = DB.getInstance().getConn();
 		String sql = "delete from uploadsalarymodel  where id = " + id;
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		Statement stmt = DB.getStatement(conn);
@@ -2309,7 +2307,7 @@ public class UploadManager {
 	
 	public static boolean deprecatedUploadOrderByName(String name){
 		boolean flag = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "update uploadorder set checked = -1 where name = '" + name + "'";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		Statement stmt = DB.getStatement(conn);
@@ -2327,7 +2325,7 @@ public class UploadManager {
 	
 	public static boolean deprecatedSalaryModelByName(String name){
 		boolean flag = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "update uploadsalarymodel set status = -1 where name = '" + name + "'";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		Statement stmt = DB.getStatement(conn);
@@ -2345,7 +2343,7 @@ public class UploadManager {
 	
 	public static boolean deleteDeprecatedItems(){
 		boolean flag = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "delete from uploadsalarymodel where status = -1 ";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		Statement stmt = DB.getStatement(conn);
@@ -2365,7 +2363,7 @@ public class UploadManager {
 	
 	public static boolean isUploaderFileNameExist(String fileName){
 		boolean result = true;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select count(*) from uploadorder where name = '" + fileName + "'";
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = null;
@@ -2391,7 +2389,7 @@ public class UploadManager {
 	
 	public static boolean isSalaryModelFileNameExist(String fileName){
 		boolean result = true;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select count(*) from uploadsalarymodel where name = '" + fileName + "'";
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = null;
@@ -2430,7 +2428,7 @@ public class UploadManager {
 
 	public static List<String> getShopNameListFromFileName(String filename) {
 		List<String> result = new ArrayList<String>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select distinct shop from uploadorder where name = '" + filename + "'";
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = null;
@@ -2484,7 +2482,7 @@ public class UploadManager {
 	
 	public static boolean isBackUped(String name){
 		boolean result = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		//暂时先这样。。。囧
 		String sql = "";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
@@ -2514,7 +2512,7 @@ public class UploadManager {
 				"or ( status = 0 and starttime < " + fmt.format(endDate)  + " and endtime > " + fmt.format(endDate) + " ) " +
 						"or ( status = 0 and starttime < " + fmt.format(startDate)  + " and endtime > " + fmt.format(startDate) + " ) ";
 		System.out.print("sql");
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		UploadSalaryModel usm = new UploadSalaryModel();

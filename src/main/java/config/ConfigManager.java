@@ -1,5 +1,7 @@
 package config;
 
+import database.DB;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,8 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
- 
-import database.DB;
 
 public class ConfigManager {
 private static ConfigManager instance;
@@ -24,69 +24,67 @@ private static ConfigManager instance;
 		return instance;
 	}
 	
-	 
-	
-	public void init(){
-		this.map=getmap(); 
-		
-	}
-	
 	public static Map<Integer,Config> getmap() {
 		Map<Integer,Config> map = new HashMap<Integer,Config>();
-		
-		Connection conn = DB.getConn();
+
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mdconfig " ;
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		try {  // cname,uname,phone,locate
-			while (rs.next()) { 
+			while (rs.next()) {
 				Config g = getConfigFromRs(rs);
 				map.put(g.getName(), g);
-			}   
-		} catch (SQLException e) { 
+			}
+		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally { 
+		} finally {
 			DB.close(rs);
 			DB.close(stmt);
 			DB.close(conn);
-		}   
+		}
 		return map;
 	}
 	
 	public static List<Config> getLocate() {
 		List<Config> list = new ArrayList<Config>();
-		
-		Connection conn = DB.getConn();
+
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mdconfig " ;
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		try {  // cname,uname,phone,locate
-			while (rs.next()) { 
+			while (rs.next()) {
 				Config g = getConfigFromRs(rs);
 				list.add(g);
-			}   
-		} catch (SQLException e) { 
+			}
+		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally { 
+		} finally {
 			DB.close(rs);
 			DB.close(stmt);
 			DB.close(conn);
-		}  
+		}
 		return list;
 	}
 	
 	 public static Config getConfigFromRs(ResultSet rs){
 		 Config p = null;
-			try { 
+		 try {
 				p = new Config();
-				p.setId(rs.getInt("id")); 
+			 p.setId(rs.getInt("id"));
 				p.setName(rs.getInt("name"));
 				p.setStatues(rs.getInt("statues"));
-			} catch (SQLException e) {   
+		 } catch (SQLException e) {
 				e.printStackTrace();
-			} 
-			return p;  
+		 }
+		 return p;
 	   }
+
+	public void init() {
+		this.map = getmap();
+
+	}
 	   
 	
 	

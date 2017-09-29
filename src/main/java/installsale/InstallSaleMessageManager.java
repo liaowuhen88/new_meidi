@@ -18,7 +18,7 @@ public class InstallSaleMessageManager {
 	 public static Map<String,List<InstallSaleMessage>> getmap(){
 		    HashMap<String,List<InstallSaleMessage>> map = new HashMap<String,List<InstallSaleMessage>>(); 
 		    List<InstallSaleMessage> list = null;
-			Connection conn = DB.getConn();    
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "select * from installsalemessage" ;  
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);

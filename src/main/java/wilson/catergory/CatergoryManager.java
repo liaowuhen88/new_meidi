@@ -1,21 +1,15 @@
 package wilson.catergory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import database.DB;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import utill.TimeUtill;
 import wilson.upload.UploadManager;
 
-import database.DB;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class CatergoryManager {
 	protected static Log logger = LogFactory.getLog(CatergoryManager.class);
@@ -23,7 +17,7 @@ public class CatergoryManager {
 	//临时的
 	public static String getCatergoryMapingByUploadOrderName(String uploadorderName){
 		String result = "";
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select distinct filename from uploadorder where name = '" + uploadorderName + "'";
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
@@ -56,8 +50,8 @@ public class CatergoryManager {
 		
 		//已经有的catergoryMaping，需要更新
 		boolean result = false;
-		String sql= "update catergorymaping set name=?,shop=?,content=?,modifytime=? where id = " + base.getId();	
-		Connection conn = DB.getConn();
+		String sql= "update catergorymaping set name=?,shop=?,content=?,modifytime=? where id = " + base.getId();
+		Connection conn = DB.getInstance().getConn();
 		
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try {
@@ -83,7 +77,7 @@ public class CatergoryManager {
 	public static boolean addCatergoryMaping(CatergoryMaping cm){
 
 		boolean result = false;
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "insert into catergorymaping values(null,?,?,?,?)";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		
@@ -109,7 +103,7 @@ public class CatergoryManager {
 	public static boolean addCatergoryMaping(String categoryName, String filename){
 
 		boolean result = false;
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		
 		List<String> shopNameList = UploadManager.getShopNameListFromFileName(filename);
 		if(!shopNameList.contains("")){
@@ -143,8 +137,8 @@ public class CatergoryManager {
 	public static boolean  delCatergoryMaping(String name,String shop){
 		boolean result = false;
 
-		String sql= "delete from catergorymaping where name = '" + name + "' and shop = '" + shop +"'";	
-		Connection conn = DB.getConn();
+		String sql= "delete from catergorymaping where name = '" + name + "' and shop = '" + shop +"'";
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		try {
 			stmt.executeUpdate(sql);
@@ -163,8 +157,8 @@ public class CatergoryManager {
 	public static boolean  delCatergoryMaping(String name){
 		boolean result = false;
 
-		String sql= "delete from catergorymaping where name = '" + name + "'";	
-		Connection conn = DB.getConn();
+		String sql= "delete from catergorymaping where name = '" + name + "'";
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		try {
 			stmt.executeUpdate(sql);
@@ -183,7 +177,7 @@ public class CatergoryManager {
 	public static CatergoryMaping getCatergory(String name,String shop){
 		CatergoryMaping result  = new CatergoryMaping();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from catergorymaping where name = '" + name + "' and shop = '" + shop + "'";
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
@@ -205,7 +199,7 @@ public class CatergoryManager {
 	public static CatergoryMaping getCatergoryByid(String id){
 		CatergoryMaping result  = new CatergoryMaping();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from catergorymaping where id = " + id;
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
@@ -227,7 +221,7 @@ public class CatergoryManager {
 	public static List<CatergoryMaping> getCatergory(String name){
 		List<CatergoryMaping> result  = new ArrayList<CatergoryMaping>();
 
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from catergorymaping where name = '" + name + "'";
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
@@ -251,7 +245,7 @@ public class CatergoryManager {
 	
 	public static HashMap<String, List<CatergoryMaping>> getCatergoryMap(){
 		HashMap<String,List<CatergoryMaping>> result = new HashMap<String,List<CatergoryMaping>>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from catergorymaping";
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);

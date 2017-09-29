@@ -1,5 +1,9 @@
 package group;
 
+import database.DB;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,17 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import database.DB;
-
 public class GroupRelateManager {
 	 protected static Log logger = LogFactory.getLog(GroupRelateManager.class);
 
 	 public static Map<Integer,List<Integer>> getmap(){ 
-		    HashMap<Integer,List<Integer>> map = new HashMap<Integer,List<Integer>>();   
-			Connection conn = DB.getConn();      
+		    HashMap<Integer,List<Integer>> map = new HashMap<Integer,List<Integer>>();
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdrelategroup ";   
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -45,8 +44,8 @@ public class GroupRelateManager {
 	 }
 	  
 	 public static GroupRelate getGroupRelate(String id){
-		    GroupRelate in = null;  
-			Connection conn = DB.getConn();    
+		    GroupRelate in = null;
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdrelategroup where id = "+id;  
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);

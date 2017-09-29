@@ -130,7 +130,7 @@ public class InventoryBranchMessageManager {
         String time = TimeUtill.getsearchtime(starttime, endtime);
 
         Map<String, List<InventoryBranchMessage>> categorys = new HashMap<String, List<InventoryBranchMessage>>();
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         String sql;
         if (!StringUtill.isNull(branchid)) {
             branchid = "(" + branchid + ")";
@@ -190,7 +190,7 @@ public class InventoryBranchMessageManager {
 
 
         List<InventoryBranchMessageCount> categorys = new ArrayList<InventoryBranchMessageCount>();
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         //logger.info(sql);
         Statement stmt = DB.getStatement(conn);
         ResultSet rs = DB.getResultSet(stmt, sql);
@@ -216,7 +216,7 @@ public class InventoryBranchMessageManager {
     public static List<InventoryBranchMessage> getBySql(String sql) {
 
         List<InventoryBranchMessage> categorys = new ArrayList<InventoryBranchMessage>();
-        Connection conn = DB.getConn();
+        Connection conn = DB.getInstance().getConn();
         logger.info(sql);
         Statement stmt = DB.getStatement(conn);
         ResultSet rs = DB.getResultSet(stmt, sql);

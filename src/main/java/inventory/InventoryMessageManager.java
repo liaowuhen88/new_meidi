@@ -1,19 +1,17 @@
 package inventory;
 
+import database.DB;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import product.ProductService;
+import user.User;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import product.ProductService;
-
-import user.User;
-import database.DB;
 
 public class InventoryMessageManager {
 	protected static Log logger = LogFactory.getLog(InventoryMessageManager.class);
@@ -40,8 +38,8 @@ public class InventoryMessageManager {
 		List<InventoryMessage> listm = new ArrayList<InventoryMessage>(); 
 		       String sql = "";    
 			   sql = "select * from  inventorymessage where inventoryId = "+ id ;
-	logger.info(sql);  
-			    Connection conn = DB.getConn();
+	logger.info(sql);
+		Connection conn = DB.getInstance().getConn();
 				Statement stmt = DB.getStatement(conn);
 				ResultSet rs = DB.getResultSet(stmt, sql);
 				try {     

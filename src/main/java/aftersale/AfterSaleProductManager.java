@@ -1,18 +1,16 @@
 package aftersale;
 
+import database.DB;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import user.User;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import database.DB;
- 
-import user.User;
 
 public class AfterSaleProductManager {
 	protected static Log logger = LogFactory.getLog(AfterSaleProductManager.class);
@@ -89,9 +87,9 @@ public class AfterSaleProductManager {
 		List<AfterSaleProduct> list = new ArrayList<AfterSaleProduct>();
 		   
 		String sql = "select *  from mdaftersaleproduct where statues = "+statues+" and asid  in ("+id+") and type = "+AfterSaleProduct.maintain ;
-		logger.info(sql);   
-		Connection conn = DB.getConn();  
-	    Statement stmt = DB.getStatement(conn);
+		logger.info(sql);
+		Connection conn = DB.getInstance().getConn();
+		Statement stmt = DB.getStatement(conn);
 
 		ResultSet rs = DB.getResultSet(stmt, sql); 
 		    
@@ -118,10 +116,10 @@ public class AfterSaleProductManager {
 		   
 		String sql = "select *  from mdaftersaleproduct where stautes = "+statues+" and asid  in ("+id+") and type = "+AfterSaleProduct.fault ;
 		
-		logger.info(sql);    
-		
-		Connection conn = DB.getConn();  
-	    Statement stmt = DB.getStatement(conn);
+		logger.info(sql);
+
+		Connection conn = DB.getInstance().getConn();
+		Statement stmt = DB.getStatement(conn);
  
 		ResultSet rs = DB.getResultSet(stmt, sql); 
 		    

@@ -1,8 +1,9 @@
 package wilson.verifyCode;
+
+import database.DB;
+
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import database.*;
-
 import java.util.Date;
 
 //status -> 0 已经消了
@@ -14,8 +15,8 @@ public class VerifyCodeManager {
 		boolean flag = false;
 		String sql = ""; 
 		//不判断是否已经有这个verifyCode了，直接存
-		sql = "insert into verifycode (saleorderno, verifycode,detail,recordtime,statues) VALUES (?,?,?,?,?)";	
-		Connection conn = DB.getConn();
+		sql = "insert into verifycode (saleorderno, verifycode,detail,recordtime,statues) VALUES (?,?,?,?,?)";
+		Connection conn = DB.getInstance().getConn();
 		SimpleDateFormat fmt=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		detail = detail.substring(0,detail.length()>240?240:detail.length());
@@ -47,7 +48,7 @@ public class VerifyCodeManager {
 		
 		//sql = "insert into verifycode (saleorderno, verifycode,detail,recordtime) VALUES (?,?,?,?)";	
 		sql = "update verifycode set statues = ? ,verifycode = ? where saleorderno = " + saleOrderNo;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try {
@@ -68,7 +69,7 @@ public class VerifyCodeManager {
 	
 	public String getDoingVerifyCode(){
 		String result = "";
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from verifycode where statues = 1";
 
 		Statement stmt = DB.getStatement(conn); 

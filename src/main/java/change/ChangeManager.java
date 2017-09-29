@@ -1,24 +1,17 @@
 package change;
 
+import database.DB;
+import net.sf.json.JSONObject;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import utill.DBUtill;
+import utill.StringUtill;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import utill.DBUtill;
-import utill.StringUtill;
-import database.DB;
+import java.util.*;
 
 public class ChangeManager {
 	protected static Log logger = LogFactory.getLog(ChangeManager.class);
@@ -204,7 +197,7 @@ public class ChangeManager {
 	public static List<Change> getLocate() {
 		List<Change> list = new ArrayList<Change>();
 
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mdchange "; 
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);  
@@ -229,7 +222,7 @@ public class ChangeManager {
 	public static List<Change> getLocate(String statues) {
 		List<Change> list = new ArrayList<Change>();
 
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mdchange "; 
 		if(!StringUtill.isNull(statues)){
 			if(0 == Integer.valueOf(statues)){

@@ -1,26 +1,21 @@
 package product;
-	import java.sql.Connection;
-	import java.sql.PreparedStatement;
-	import java.sql.ResultSet;
-	import java.sql.SQLException;
-	import java.sql.Statement;
-	import java.util.ArrayList;
-    import java.util.HashMap;
-	import java.util.List;
 
-
+import database.DB;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-	import database.DB;
 import utill.DBUtill;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 	
 	public class ProductManager {
 		 protected static Log logger = LogFactory.getLog(ProductManager.class);
 		
 		 public static List<Product> getProduct(String id) {
 			List<Product> categorys = new ArrayList<Product>();
-			Connection conn = DB.getConn();
+			 Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdproduct where categoryID = "+ id + " and pstatues = 0";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -45,7 +40,7 @@ import utill.DBUtill;
 		
 		 public static List<Product> getProductList() {
 				List<Product> categorys = new ArrayList<Product>();
-				Connection conn = DB.getConn();
+			 Connection conn = DB.getInstance().getConn();
 				String sql = "select * from mdproduct where pstatues = 0";
 				Statement stmt = DB.getStatement(conn);
 				ResultSet rs = DB.getResultSet(stmt, sql);
@@ -70,7 +65,7 @@ import utill.DBUtill;
 		 
 		 public static List<String> getProduct(int id) {
 				List<String> categorys = new ArrayList<String>();
-				Connection conn = DB.getConn();
+			 Connection conn = DB.getInstance().getConn();
 				String sql = "select * from mdproduct where categoryID = "+ id + " and pstatues = 0";
 				Statement stmt = DB.getStatement(conn);
 				ResultSet rs = DB.getResultSet(stmt, sql);
@@ -90,7 +85,7 @@ import utill.DBUtill;
 		 
 		 public static Product getProductbyname(String name) {
 			    Product p = null;
-				Connection conn = DB.getConn();
+			 Connection conn = DB.getInstance().getConn();
 				String sql = "select * from mdproduct where ptype = '"+ name+"'";
 logger.info(sql); 
 				Statement stmt = DB.getStatement(conn);
@@ -116,7 +111,7 @@ logger.info(sql);
 		 
 		public static List<Product> getProduct(String id,int statues) {
 			List<Product> categorys = new ArrayList<Product>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdproduct where pstatues = "+statues+" and categoryID = "+ id;
 logger.info(sql);  
 			Statement stmt = DB.getStatement(conn);
@@ -140,7 +135,7 @@ logger.info(sql);
 		
 		public static HashMap<Integer,ArrayList<Product>> getProduct() {
 			HashMap<Integer,ArrayList<Product>> map = new HashMap<Integer,ArrayList<Product>>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdproduct where pstatues = 0";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -171,7 +166,7 @@ logger.info(sql);
 		
 		public static HashMap<String,ArrayList<Product>> getProductstr() {
 			HashMap<String,ArrayList<Product>> map = new HashMap<String,ArrayList<Product>>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdproduct where pstatues = 0";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -202,7 +197,7 @@ logger.info(sql);
 		
 		public static HashMap<String,Product> getProductType() {  
 			HashMap<String,Product> map = new HashMap<String,Product>();
-			Connection conn = DB.getConn(); 
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdproduct where pstatues = 0";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -224,7 +219,7 @@ logger.info(sql);
 		
 		public static HashMap<Integer,Product> getProductID() {   
 			HashMap<Integer,Product> map = new HashMap<Integer,Product>();
-			Connection conn = DB.getConn();  
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdproduct";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -245,7 +240,7 @@ logger.info(sql);
 		
 		public static List<String> getProductlist() { 
 			List<String> list = new ArrayList<String>();
-			Connection conn = DB.getConn();  
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdproduct where pstatues = 0";
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -274,7 +269,7 @@ logger.info(sql);
 		
 		public static HashMap<String,ArrayList<String>> getProductName() {
 			HashMap<String,ArrayList<String>> map = new HashMap<String,ArrayList<String>>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdproduct where pstatues = 0  ";
 			 
 			Statement stmt = DB.getStatement(conn);
@@ -302,7 +297,7 @@ logger.info(sql);
 		
 		public static List<String> getAllProductName() {
 			List<String> result = new ArrayList<String>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdproduct where pstatues = 0  ";
 			 
 			Statement stmt = DB.getStatement(conn);
@@ -324,7 +319,7 @@ logger.info(sql);
 		
 		public static HashMap<String,ArrayList<String>> getProductName(int statues) {
 			HashMap<String,ArrayList<String>> map = new HashMap<String,ArrayList<String>>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdproduct where pstatues = 0";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -351,7 +346,7 @@ logger.info(sql);
 		public static boolean delete(String str ) {
 			String ids = "(" + str + ")";
 			boolean b = false;
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "update  mdproduct set pstatues = 1 where  id in " + ids; 
 			Statement stmt = DB.getStatement(conn);
 			ProductService.flag = true ;
@@ -380,8 +375,8 @@ logger.info(sql);
 			ProductService.flag = true ;
 		}
 		 
-		public static void update(String type,String id,double size,double stockprice ){	
-			Connection conn = DB.getConn(); 
+		public static void update(String type,String id,double size,double stockprice ){
+			Connection conn = DB.getInstance().getConn();
 			String sql = "update mdproduct set ptype = ? , size = ? ,stockprice = ? where id = ?";
 			PreparedStatement pstmt = DB.prepare(conn, sql);
 			try {

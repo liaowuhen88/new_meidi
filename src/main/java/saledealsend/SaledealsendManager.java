@@ -1,7 +1,16 @@
 package saledealsend;
 
 
+import database.DB;
 import group.Group;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import user.User;
+import user.UserManager;
+import utill.BasicUtill;
+import utill.DBUtill;
+import utill.StringUtill;
+import utill.TimeUtill;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -11,18 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import user.User;
-import user.UserManager;
-import utill.BasicUtill;
-import utill.DBUtill;
-import utill.StringUtill;
-import utill.TimeUtill;
-
-import database.DB;
    
 public class SaledealsendManager {
 	protected static Log logger = LogFactory.getLog(SaledealsendManager.class);
@@ -77,8 +74,8 @@ public class SaledealsendManager {
 		 } */
 	  
 	 public static Map<String,Saledealsend> getmap(){
-		    HashMap<String,Saledealsend> map = new HashMap<String,Saledealsend>(); 
-			Connection conn = DB.getConn();    
+		    HashMap<String,Saledealsend> map = new HashMap<String,Saledealsend>();
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "select * from saledealsend";  
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -115,9 +112,9 @@ public class SaledealsendManager {
 				 search += " and dealsendid in ( select id from mduser where charge = " +user.getId()+ " ) ";   
 			 }
 		 }
-		 
-		 
-			Connection conn = DB.getConn();    
+
+
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "select * from saledealsend where 1= 1 "+ search; 
 			logger.info(sql);
 			Statement stmt = DB.getStatement(conn);
@@ -139,8 +136,8 @@ public class SaledealsendManager {
 	 }
 	 
 	 public static Saledealsend getSaledealsend(String id){
-		 Saledealsend in = null; 
-			Connection conn = DB.getConn();    
+		 Saledealsend in = null;
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "select * from saledealsend where id = "+id;  
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -160,8 +157,8 @@ public class SaledealsendManager {
 	 }
 	 
 	 public static int getmaxid(){
-		    int count = 0 ; 
-		    Connection conn = DB.getConn();
+		    int count = 0 ;
+		 Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 			String  sql = "select max(id) as id from saledealsend" ;
 			ResultSet rs = DB.getResultSet(stmt, sql);  
@@ -181,7 +178,7 @@ public class SaledealsendManager {
 	 
 	 public static List<Saledealsend> getSaledealsendUnquery(User user,int type){
 		 List<Saledealsend> list = new ArrayList<Saledealsend>();
-			Connection conn = DB.getConn(); 
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "";
 			if(BasicUtill.dealsend == type){
 				if(UserManager.checkPermissions(user, Group.dealSend)){

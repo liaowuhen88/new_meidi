@@ -1,35 +1,28 @@
 package orderPrint;
 
 
+import database.DB;
 import gift.Gift;
 import gift.GiftService;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List; 
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import order.Order;
 import order.OrderManager;
 import orderproduct.OrderProduct;
 import orderproduct.OrderProductService;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import user.User;
 import utill.TimeUtill;
-import database.DB;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
  
 public class OrderPrintlnManager { 
 	 protected static Log logger = LogFactory.getLog(OrderPrintlnManager.class);
 	   public static boolean updateOrderStatues(User user,int id ,int oid, int uid , int statues){
-			   Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 				String sql = "update mdorderupdateprint set statues = ?" +
 						" where id = " + id;  
 				PreparedStatement pstmt = DB.prepare(conn, sql);
@@ -98,7 +91,7 @@ logger.info(pstmt);
 
 	public static boolean delete(int id) {
 		boolean b = false;
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "delete from mdorderupdateprint where id = " + id;
 		Statement stmt = DB.getStatement(conn);
 		try {
@@ -123,7 +116,7 @@ logger.info(pstmt);
 		List<String> sqls = new ArrayList<String>();
 		
 		boolean b = false;
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = ""; 
 		if(OrderPrintln.release == order.getType()){ 
 			sql = "delete from mdorderupdateprint where orderid = " +order.getOrderid() + " and mdtype = " + order.getType();
@@ -153,7 +146,7 @@ logger.info(pstmt);
 	
 	public static boolean delete(int oid ,int statues ) { 
 		boolean b = false;
-		Connection conn = DB.getConn();   
+		Connection conn = DB.getInstance().getConn();
 		String sql = "delete from mdorderupdateprint where orderid = " +oid + " and mdtype = " + statues;
 		Statement stmt = DB.getStatement(conn);
 		try {
@@ -169,7 +162,7 @@ logger.info(pstmt);
 	
 	   public static void save( OrderPrintln order) {
 		         delete(order);
-				Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 				String sql = "insert into  mdorderupdateprint (id, message ,statues , orderid,mdtype ,pGroupId,uid,groupid)" +
 	                         "  values ( null, ?, ?, ?,?,?,?,?)";
 				PreparedStatement pstmt = DB.prepare(conn, sql);
@@ -194,7 +187,7 @@ logger.info(pstmt);
 	   
 	   public static int getMaxid(){
 		   int id = 0 ;
-		   Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 			String  sql = "select max(id)+1 as id from mdorderstatues" ;
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -215,7 +208,7 @@ logger.info(pstmt);
 	   
 	   public static  Map<Integer,OrderPrintln>  getOrderStatues(User user){
 		    Map<Integer,OrderPrintln> map = new HashMap<Integer,OrderPrintln>();
-		    Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 			String sql = "select * from  mdorderupdateprint ";
 			System.out.println(sql);
@@ -264,7 +257,7 @@ logger.info(pstmt);
 	   
 	   public static  Map<Integer,Map<Integer,OrderPrintln>>  getOrderStatuesMap(User user){
 		   Map<Integer,Map<Integer,OrderPrintln>> maps = new HashMap<Integer,Map<Integer,OrderPrintln>>();
-		    Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn); 
 			String 	sql = "select * from  mdorderupdateprint " ;
 //logger.info(sql);  
@@ -291,7 +284,7 @@ logger.info(pstmt);
 	   
 	   public static  Map<Integer,OrderPrintln>  getOrderStatues(User user,int type){
 		    Map<Integer,OrderPrintln> map = new HashMap<Integer,OrderPrintln>();
-		    Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 			String 	sql = "select * from  mdorderupdateprint where  mdtype =" + type ;
 logger.info(sql); 
@@ -314,7 +307,7 @@ logger.info(sql);
 	   public static OrderPrintln getOrderStatues(User user ,int id,int type){
 		   
 		        OrderPrintln Order = null;
-			    Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 				Statement stmt = DB.getStatement(conn);
 				String sql = "select * from  mdorderupdateprint where orderid = "  + id+ " and mdtype = "+ type;
 logger.info(sql);  
@@ -334,8 +327,8 @@ logger.info(sql);
 		 }
 	   
 	   public static List<OrderPrintln> getOrderPrintlnbyOrderid(int id){
-		   List<OrderPrintln> list = new ArrayList<OrderPrintln>(); 
-		    Connection conn = DB.getConn(); 
+		   List<OrderPrintln> list = new ArrayList<OrderPrintln>();
+		   Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 			String sql = "select * from  mdorderupdateprint where orderid = "  + id;
 logger.info(sql);  
@@ -358,7 +351,7 @@ logger.info(sql);
 	   public static OrderPrintln getOrderStatues(int id){
 		   
 	        OrderPrintln Order = null;
-		    Connection conn = DB.getConn();
+		   Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 			String sql = "select * from  mdorderupdateprint where  id = "  + id;
 logger.info(sql);    

@@ -1,26 +1,9 @@
 package wilson.salaryCalc;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
+import database.DB;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import product.ProductService;
-
 import utill.StringUtill;
 import wilson.catergory.CatergoryManager;
 import wilson.catergory.CatergoryMaping;
@@ -28,7 +11,12 @@ import wilson.catergory.HiddenCatergoryMapingManager;
 import wilson.upload.UploadManager;
 import wilson.upload.UploadOrder;
 import wilson.upload.UploadSalaryModel;
-import database.DB;
+
+import javax.servlet.http.HttpServletRequest;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Date;
 
 public class SalaryCalcManager {
 	
@@ -655,8 +643,8 @@ public class SalaryCalcManager {
 		if(salaryResult == null || salaryResult.size() <= 0){
 			return false;
 		}
-		
-		Connection conn = DB.getConn();
+
+		Connection conn = DB.getInstance().getConn();
 		String sql = "update salaryresult set salary = ?,calctime=?,uploadsalarymodelid=?,uploadorderid=? where id = ?";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		
@@ -716,8 +704,8 @@ public class SalaryCalcManager {
 				i--;
 			}
 		}
-		
-		Connection conn = DB.getConn();
+
+		Connection conn = DB.getInstance().getConn();
 		//暂时先这样。。。囧
 		String sql = "";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
@@ -977,7 +965,7 @@ public class SalaryCalcManager {
 	public static boolean saveSalaryResult(SalaryResult input){
 		if(input.getId() > 0){
 			boolean flag = false;
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			boolean autoCommit = false;
 			String sql = "update uploadorder set name = ?,shop=?,posno=?,salesman=?,saletime=?,type=?,num=?,saleprice=? where id =" + input.getUploadOrderId();
 			PreparedStatement pstmt = DB.prepare(conn, sql);
@@ -1044,7 +1032,7 @@ public class SalaryCalcManager {
 		Map<Integer,UploadOrder> orderMap = new HashMap<Integer,UploadOrder>();
 		
 		String sql = "select * from uploadorder where checked = 2";
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		UploadOrder tempOrder = new UploadOrder();
@@ -1108,8 +1096,8 @@ public class SalaryCalcManager {
 		
 		
 		String sql = "select * from salaryresult where status = 0";
-		
-		Connection conn = DB.getConn();
+
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		UploadOrder tempOrder = new UploadOrder();
@@ -1191,8 +1179,8 @@ public class SalaryCalcManager {
 		
 		
 		String sql = "select * from salaryresult where status = 0";
-		
-		Connection conn = DB.getConn();
+
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		UploadOrder tempOrder = new UploadOrder();
@@ -1258,8 +1246,8 @@ public class SalaryCalcManager {
 		String idSTR = "";
 		
 		String sql = "select id from uploadorder where name = '" + name + "' and checked = 2";
-		
-		Connection conn = DB.getConn();
+
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		try {
@@ -1307,8 +1295,8 @@ public class SalaryCalcManager {
 	public static SalaryResult getSalaryResultById(int id) {
 		SalaryResult result = new SalaryResult();
 		String sql = "select * from salaryresult where id = " + id;
-		
-		Connection conn = DB.getConn();
+
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		UploadOrder tempOrder = new UploadOrder();
@@ -1356,7 +1344,7 @@ public class SalaryCalcManager {
 		String sql = "select * from uploadorder where saletime >= '" + fmt.format(startDate) + "' and saletime <= '" + fmt.format(endDate) + "' and checked != " + UploadOrder.ORIGIN +" order by name,shop";
 	
 		logger.info(sql);
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		UploadOrder tempOrder = new UploadOrder();
@@ -1456,7 +1444,7 @@ public class SalaryCalcManager {
 			String sql = "select * from uploadsalarymodel where id in (" + uploadSalaryModelIdListSTR + ")";
 			//sql += " and checked != -1";
 			logger.info(sql);
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
 

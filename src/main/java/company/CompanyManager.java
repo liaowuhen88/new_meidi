@@ -1,14 +1,10 @@
 package company;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import database.DB;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import database.DB;
+import java.sql.*;
   
 public class CompanyManager {
 	
@@ -16,7 +12,7 @@ public class CompanyManager {
 	
 	 public static boolean  save(Company  c){
 		delete();
-		Connection conn = DB.getConn(); 
+		 Connection conn = DB.getInstance().getConn();
 		String sql = "insert into mdcompany(cname,uname,phone,locate,locatedetail) values (?,?,?,?,?)";
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try {       
@@ -37,8 +33,8 @@ public class CompanyManager {
 	}
 	  
 	 public static boolean delete() {
-			boolean b = false; 
-			Connection conn = DB.getConn();
+			boolean b = false;
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "delete from mdcompany ";
 			Statement stmt = DB.getStatement(conn);
 			try {
@@ -52,7 +48,7 @@ public class CompanyManager {
 		}
 	 
 	 public static boolean  update(String  c ,String bid ){
-			Connection conn = DB.getConn(); 
+		 Connection conn = DB.getInstance().getConn();
 			String sql = "update mdbranchtype set bname = ? where id = " + bid ;
 			PreparedStatement pstmt = DB.prepare(conn, sql);
 			try { 
@@ -69,7 +65,7 @@ public class CompanyManager {
 	 
 		public static Company getLocate() {
 			Company g = new Company();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdcompany " ;
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);

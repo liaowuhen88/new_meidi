@@ -1,38 +1,26 @@
 package inventory;
 
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import branch.Branch;
 import branch.BranchService;
-
-
-
+import database.DB;
 import order.Order;
-import order.OrderManager;
-
 import orderproduct.OrderProduct;
 import orderproduct.OrderProductManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import product.ProductService;
-
 import user.User;
 import user.UserManager;
 import utill.DBUtill;
 import utill.StringUtill;
 import utill.TimeUtill;
 
-import database.DB;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
 
 public class InventoryBranchManager {  
 	protected static Log logger = LogFactory.getLog(InventoryBranchManager.class);
@@ -40,7 +28,7 @@ public class InventoryBranchManager {
 	public static List<InventoryBranch> getCategory(String branch , String type) { 
 		
 		List<InventoryBranch> categorys = new ArrayList<InventoryBranch>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "";
 		if(!StringUtill.isNull(type) && !StringUtill.isNull(branch)){ 
 			//type = ProductService.gettypemap().get(type).getId()+""; 
@@ -76,7 +64,7 @@ public class InventoryBranchManager {
 public static List<InventoryBranch> getCategoryid(String branch , String categoryid) {  
 		//System.out.println(branch);
 		List<InventoryBranch> categorys = new ArrayList<InventoryBranch>();
-		Connection conn = DB.getConn();
+	Connection conn = DB.getInstance().getConn();
 		String sql = ""; 
 		if(!StringUtill.isNull(categoryid) && !StringUtill.isNull(branch)){
 			sql = "select * from mdinventorybranch where inventoryid in ("+categoryid +") and branchid in ("+branch+")  and branchid not in (select id from mdbranch where statues = 1 ) order by  id desc";  
@@ -523,7 +511,7 @@ public static List<InventoryBranch> getCategoryid(String branch , String categor
 	public static InventoryBranch getMaxOrder(){
 	    int id = 1 ;
 	    InventoryBranch order = null;
-	    Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn);
 		//  select top 1 * from table order by id desc 
 		// select * from table where id in (select max(id) from table)
@@ -562,8 +550,8 @@ public static List<InventoryBranch> getCategoryid(String branch , String categor
 		InventoryBranch orders = null;   
 		   String sql = "";    
 			   sql = "select * from   mdinventorybranch  where branchid = "+ branchid + " and type = '" + type+"'"; 
-	logger.info(sql); 
-			    Connection conn = DB.getConn();
+	logger.info(sql);
+		Connection conn = DB.getInstance().getConn();
 				Statement stmt = DB.getStatement(conn);
 				ResultSet rs = DB.getResultSet(stmt, sql);
 				try {  
@@ -588,8 +576,8 @@ public static List<InventoryBranch> getCategoryid(String branch , String categor
 		   
 		   String sql = "";    
 			   sql = "select * from   mdinventorybranch  where branchid in (select branchid from relatebranch where relatebranchid =  " + branchid +")"; 
-	logger.info(sql); 
-			    Connection conn = DB.getConn();
+	logger.info(sql);
+		Connection conn = DB.getInstance().getConn();
 				Statement stmt = DB.getStatement(conn);
 				ResultSet rs = DB.getResultSet(stmt, sql); 
 				try {  
@@ -613,8 +601,8 @@ public static List<InventoryBranch> getCategoryid(String branch , String categor
 		   
 		   String sql = "";    
 			   sql = "select * from   mdinventorybranch  where branchid in (select branchid from relatebranch where relatebranchid =  " + branchid +")"; 
-	logger.info(sql); 
-			    Connection conn = DB.getConn();
+	logger.info(sql);
+		Connection conn = DB.getInstance().getConn();
 				Statement stmt = DB.getStatement(conn);
 				ResultSet rs = DB.getResultSet(stmt, sql); 
 				try {  
@@ -652,8 +640,8 @@ public static List<InventoryBranch> getCategoryid(String branch , String categor
 		
 		boolean flag = true ;
 		String sql = "select * from mdinventorybranch where branchid = "+ bid;
-		
-		Connection conn = DB.getConn();
+
+		Connection conn = DB.getInstance().getConn();
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql); 
 		try {  

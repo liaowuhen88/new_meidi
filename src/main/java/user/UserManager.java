@@ -1,39 +1,41 @@
 package user;
 
-import group.Group;
-import group.GroupManager;
-import group.GroupService;
-
-import java.io.UnsupportedEncodingException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import utill.DBUtill;
-import utill.StringUtill;
 import branch.Branch;
 import branch.BranchService;
 import database.DB;
+import group.Group;
+import group.GroupManager;
+import group.GroupService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import utill.DBUtill;
+import utill.StringUtill;
+
+import java.io.UnsupportedEncodingException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
     
-public class UserManager {   
+public class UserManager {
+	/**
+	 * by wilsonlee
+	 * get static user map
+	 *
+	 * @return
+	 */
+	public static HashMap<Integer, User> staticUserMap = getMap();
 	protected static Log logger = LogFactory.getLog(UserManager .class);
+	
 	//  验证是否有相同的用户名
-	public static boolean getName(String c){
-    	boolean flag = false ; 
-		Connection conn = DB.getConn();
-		String sql = "select * from mduser where statues != 2 and username = '"+ c+ "'";
-        //logger.info(sql);    
+	public static boolean getName(String c) {
+		boolean flag = false;
+		Connection conn = DB.getInstance().getConn();
+		String sql = "select * from mduser where statues != 2 and username = '"+ c + "'";
+		//logger.info(sql);
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
-		try { 
+		try {
 			while (rs.next()) {
 				flag = true ;
 			}
@@ -43,17 +45,17 @@ public class UserManager {
 			DB.close(rs);
 			DB.close(stmt);
 			DB.close(conn);
-		}	
-    	return flag;
-    }
-	
+		}
+		return flag;
+	}
+	 
 	//  根据id验证职工是否存在
 	 public static boolean getid(int id){
 		   boolean flag = false ;
 		   if(0 == id ){
-			   return flag ;
-		   } 
-		    Connection conn = DB.getConn();
+			   return flag;
+		   }
+		 Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 			String  sql = "select id from mduser where id = " + id ;
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -72,11 +74,10 @@ public class UserManager {
 
 	   }
 	 
-	 
 	 public static boolean updatePhone(String uid,String phone,String branchid){
 		   boolean flag = false ;
 		   String sql = "";
-		    Connection conn = DB.getConn();
+		 Connection conn = DB.getInstance().getConn();
 			Statement stmt = DB.getStatement(conn);
 			if(!StringUtill.isNull(phone)){
 				if(StringUtill.isNull(branchid)){
@@ -89,10 +90,10 @@ public class UserManager {
 					sql = "update mduser set branch = '"+branchid+"' where id = " + uid ;
 				}
 			}
-			
+
 			try {
 				stmt.executeUpdate(sql);
-				flag = true ; 
+				flag = true ;
 				UserService.flag = true ;
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -103,25 +104,23 @@ public class UserManager {
 			return flag;
 
 	   }
-	 
-	 
-	 
+
 	 // 保存职工
 	public static boolean save(User user) {
 		boolean flag = false ;
-		if(UserManager.getName(user.getUsername())){
-			return flag; 
+		if(UserManager.getName(user.getUsername())) {
+			return flag;
 		}
-	  
-		String sql = ""; 
+
+		String sql = "";
 		User old = UserManager.getUser(user);
-		if(old != null){     
-			UserManager.delete(old.getId());   
+		if (old != null) {
+			UserManager.delete(old.getId());
 			sql = "insert into mduser (id, username,nickusername,userpassword, entryTime,branch,positions,usertype,products,phone,charge,statues,chargeid,location) VALUES ("+old.getId()+",?,?,?,?,?,?,?,null,?,?,?,?,?)";
-		}else {
-			sql = "insert into mduser (id, username,nickusername,userpassword, entryTime,branch,positions,usertype,products,phone,charge,statues,chargeid,location) VALUES (null,?,?,?,?,?,?,?,null,?,?,?,?,?)";	
+		} else {
+			sql = "insert into mduser (id, username,nickusername,userpassword, entryTime,branch,positions,usertype,products,phone,charge,statues,chargeid,location) VALUES (null,?,?,?,?,?,?,?,null,?,?,?,?,?)";
 		}
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try {
@@ -135,9 +134,9 @@ public class UserManager {
 			pstmt.setString(8, user.getPhone());
 			pstmt.setString(9, user.getCharge());
 			pstmt.setInt(10, user.getStatues());
-			pstmt.setInt(11, user.getChargeid()); 
-			pstmt.setString(12, user.getLocation());   
-            logger.info(pstmt);  
+			pstmt.setInt(11, user.getChargeid());
+			pstmt.setString(12, user.getLocation());
+			logger.info(pstmt);
 			int count = pstmt.executeUpdate();
 			if(count > 0){
 				flag = true ;
@@ -149,20 +148,21 @@ public class UserManager {
 			DB.close(pstmt);
 			DB.close(conn);
 		}
-    return flag ;  
+		return flag ;
 	}
+
     // 更新员工
 	public static boolean update(User user) {
 		String sql ;
-		
+
 		if(UserManager.getid(user.getId())){
 			UserManager.delete(user.getId());
 			sql = "insert into mduser (id, username,nickusername,userpassword, entryTime,branch,positions,usertype,products,phone,charge,statues,chargeid) VALUES ("+user.getId()+",?,?,?,?,?,?,?,null,?,?,?,?)";
-		}else {
-			sql = "insert into mduser (id, username,nickusername,userpassword, entryTime,branch,positions,usertype,products,phone,charge,statues,chargeid) VALUES (null,?,?,?,?,?,?,?,null,?,?,?,?)";	
+		} else {
+			sql = "insert into mduser (id, username,nickusername,userpassword, entryTime,branch,positions,usertype,products,phone,charge,statues,chargeid) VALUES (null,?,?,?,?,?,?,?,null,?,?,?,?)";
 		}
-		Connection conn = DB.getConn();
-		
+		Connection conn = DB.getInstance().getConn();
+
 		PreparedStatement pstmt = DB.prepare(conn, sql);
 		try {
 			pstmt.setString(1, user.getUsername());
@@ -173,10 +173,10 @@ public class UserManager {
 			pstmt.setString(6, user.getPositions());
 			pstmt.setInt(7, user.getUsertype());
 			pstmt.setString(8, user.getPhone());
-			pstmt.setString(9, user.getCharge()); 
-			pstmt.setInt(10, user.getStatues()); 
-			pstmt.setInt(11, user.getChargeid());   
-logger.info(pstmt);   
+			pstmt.setString(9, user.getCharge());
+			pstmt.setInt(10, user.getStatues());
+			pstmt.setInt(11, user.getChargeid());
+			logger.info(pstmt);
 			pstmt.executeUpdate();
 			UserService.flag = true ;
 		} catch (SQLException e) {
@@ -187,13 +187,14 @@ logger.info(pstmt);
 		}
     return true ;
 	}
+
 	// 获取职工的权限
 	public static String[] getPermission(User user){
-		
+
 		String sql = "select permissions from mdgroup where  id = '" + user.getUsertype()+"';";
-		
+
 		//System.out.println(sql);
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String[] Permissions = null ;
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
@@ -202,19 +203,20 @@ logger.info(pstmt);
 				String permissions = rs.getString("permissions");
 				Permissions = permissions.split("_");
 				//System.out.println(2);
-			} 
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return Permissions;
 	}
+		
 	// 获取职工的产品权限
 		public static String[] getProducts(User user){
-			
+
 			String sql = "select products from mdgroup where  id = '" + user.getUsertype()+"';";
-			
+
 	//logger.info(sql);
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String[] Permissions = null ;
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -222,83 +224,83 @@ logger.info(pstmt);
 				while (rs.next()) {
 					String permissions = rs.getString("products");
 					Permissions = permissions.split("_");
-//logger.info(Permissions);					
+//logger.info(Permissions);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 			return Permissions;
 		}
-		
+	
 	// 验证职工是否有某种权限
 		//  w  写全蝎  r 读权限
 	public static boolean checkPermissions(User user , int permissions,String petnissionsType){
 		if(Group.tuihuo == permissions){
 			permissions = Group.send;
-		   }  
-		boolean flag = false ; 
+		}
+		boolean flag = false ;
 		//logger.info(user.getUsertype());
 		Group listg = GroupManager.getGroup(user.getUsertype());
 	   // logger.info(listg);
-		String[] pe = null ;
-		if(listg != null){ 
+		String[] pe = null;
+		if (listg != null){
 		//	logger.info(listg.getPermissions());
 			pe = listg.getPermissions().split("_");
-		} 
-		 if(pe != null){ 
+		}
+		if (pe != null){
 			 for(int i=0;i<pe.length;i++){
 	               String mess = pe[i];
 	              // logger.info(permissions+"***"+pe[i]);
 	               String[] mes = mess.split("-");
-	               String p = mes[0]; 
-	               String type = mes[1]; 
-				  
+				 String p = mes[0];
+				 String type = mes[1];
+
 					if(Integer.valueOf(p) == permissions || Integer.valueOf(p) == Group.Manger){
 						if("w".equals(type) && petnissionsType.equals("r") || petnissionsType.equals(type)){
 							flag = true ;
 						}
-						
+
 					}
-				} 
+				}
 		 }
-		  
-		return  flag ;
-	}  
+
+		return flag ;
+	}
 	
 	//  w  写全蝎  r 读权限
 	public static boolean checkPermissions(User user , int permissions){
 		if(Group.tuihuo == permissions){
 			permissions = Group.send;
-		   }   
-		boolean flag = false ; 
+		}
+		boolean flag = false ;
 		Group listg = GroupService.getidMap().get(user.getUsertype());
-		String[] pe = null ;  
-		 
+		String[] pe = null ;
+
 		if(listg != null){
 			pe = listg.getPermissions().split("_");
 			//System.out.println("pe"+pe);
-		}    
-		 if(pe != null){  
+		}
+		if (pe != null){
 			 for(int i=0;i<pe.length;i++){
 	               String mess = pe[i];
 	               if(!StringUtill.isNull(mess)){
 	            	   String[] mes = mess.split("-");
-		               String p = mes[0]; 
+					   String p = mes[0];
 					 //logger.info(permissions+"***"+pe[i]+"****"+p);
-						if(Integer.valueOf(p) == permissions || Integer.valueOf(p) == Group.Manger){	
+					   if (Integer.valueOf(p) == permissions || Integer.valueOf(p) == Group.Manger){
 							flag = true ;
 						}
-	               }
-				} 
+				   }
+				}
 		 }
-		  
-		return  flag ;
-	}  
-	
+
+		return flag ;
+	}
+
 	// 获取职工
 	public static List<User> getUsers() {
 		List<User> users = new ArrayList<User>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from  mduser";
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
@@ -316,10 +318,11 @@ logger.info(pstmt);
 		}
 		return users;
 	}
+	
 	  // 获取门店导购员的个数
 	public static List<User> getUsers(Branch branch) {
 		List<User> users = new ArrayList<User>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from  mduser where branch = "+ branch.getLocateName();
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
@@ -340,20 +343,20 @@ logger.info(pstmt);
 	
 	public static int getUsersCount(Branch branch) {
 		List<User> list = getUsers(branch);
-		return list.size(); 
+		return list.size();
 	}
 	
 	public static User getUser(User user) {
 		User u  = null;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from  mduser where username = '"+ user.getUsername() + "' and phone = '" + user.getPhone() + "' and branch = '"+user.getBranch()+"'  and statues = 2";
-	logger.info(sql); 	 
+		logger.info(sql);
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		try {
 			while (rs.next()) {
 				u = UserManager.getUserFromRs(rs);
-				
+
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -361,14 +364,16 @@ logger.info(pstmt);
 			DB.close(rs);
 			DB.close(stmt);
 			DB.close(conn);
-		} 
+		}
 		return u;
 	}
-	
+
+	// 获取职工
+		
 	// 获取职工
 		public static List<User> getUsersNodelete() {
 			List<User> users = new ArrayList<User>();
-			Connection conn = DB.getConn(); 
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from  mduser where statues != 2";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -387,22 +392,20 @@ logger.info(pstmt);
 			return users;
 		}
 		
-		// 获取职工
-		
 				public static List<User> getUsersNodelete(User user) {
-					
+
 					List<User> users = new ArrayList<User>();
-					Connection conn = DB.getConn();
+					Connection conn = DB.getInstance().getConn();
 					String sql = "";
-					
+
 					if(UserManager.checkPermissions(user, Group.Manger)){
 						sql = "select * from  mduser where statues != 2 order by id desc";
 					}else {
 						// select groupid from  mdrelategroup where  pgroupid = '"+user.getUsertype()+"'
 						//sql = "select * from  mduser where statues != 2 and usertype in (select id from mdgroup where pid = "+user.getUsertype()+") order by id desc";
 						sql = "select * from  mduser where statues != 2 and usertype in (select groupid from  mdrelategroup where  pgroupid = '"+user.getUsertype()+"') order by id desc";
-					} 
-					logger.info(sql); 
+					}
+					logger.info(sql);
 					//  select id from mdgroup where pid = user.get
 					Statement stmt = DB.getStatement(conn);
 					ResultSet rs = DB.getResultSet(stmt, sql);
@@ -419,14 +422,14 @@ logger.info(pstmt);
 						DB.close(conn);
 					}
 					return users;
-				}    
-		
+				}
+
               public static List<User> getUserszhuce(User user) {
-					
+
 					List<User> users = new ArrayList<User>();
-					Connection conn = DB.getConn();
+				  Connection conn = DB.getInstance().getConn();
 					String sql = "";
-					
+
 					if(UserManager.checkPermissions(user, Group.Manger)){
 						sql = "select * from  mduser where statues = 0";
 					}else {
@@ -448,26 +451,26 @@ logger.info(pstmt);
 						DB.close(conn);
 					}
 					return users;
-				}   
-
+				}
+				 
          public static List<User> getUsersNodeleteDown(User user ,int count ) {
-					
+
         	       if(UserManager.checkPermissions(user, Group.Manger)){
         	    	   return null ;
-        	       }
-        	 
-        	 
+				   }
+
+
 					List<User> users = new ArrayList<User>();
-					Connection conn = DB.getConn();
-					
-					String str1 = "(select groupid from  mdrelategroup where  pgroupid = '"+user.getUsertype()+"') "; 
+			 Connection conn = DB.getInstance().getConn();
+
+			 String str1 = "(select groupid from  mdrelategroup where  pgroupid = '" + user.getUsertype()+"') ";
 					String str = " (select groupid from  mdrelategroup where  pgroupid in " ;
-					
+
 					for(int i = 0 ;i < count ;i ++ ){
 						str +=  str1 +")";
-						
+
 					}
-					
+
 					String sql = "select * from  mduser where statues != 2 and usertype in "+ str +" order by id desc";
 					//  select id from mdgroup where pid = user.get
 					Statement stmt = DB.getStatement(conn);
@@ -486,19 +489,19 @@ logger.info(pstmt);
 						DB.close(conn);
 					}
 					return users;
-				}    			
-				 
+				}
+	 
 	// type 2 为售货员
 	public static List<User> getUsers(int type) {
-		
+
 		List<Group> listg = GroupManager.getInstance().getListGroupFromPemission(type);
-		
+
 		String str = StringUtill.GetSqlInGroup(listg);
-		
+
 		List<User> users = new ArrayList<User>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from  mduser where  usertype in " + str + "  and statues = 1 ";
-logger.info(sql);		
+		logger.info(sql);
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
 		try {
@@ -515,26 +518,26 @@ logger.info(sql);
 		}
 		return users;
 	}
-	 
+	  
 	// type 2 为售货员  二级配单
 		public static List<User> getUsers(User user ,int type) {
-			
+
 			//List<Group> listg = GroupManager.getInstance().getListGroupFromPemission(type);
-            List<Group> listg = GroupManager.getGroupPeimission(type); 
-		
+			List<Group> listg = GroupManager.getGroupPeimission(type);
+
 			String str = StringUtill.GetSqlInGroup(listg);
-	
+
 			List<User> users = new ArrayList<User>();
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "";
 			 if(UserManager.checkPermissions(user, Group.Manger)){
 				 sql = "select * from  mduser where statues = 1  and  usertype in " + str ;
 			 }else {
 				 sql = "select * from  mduser where statues = 1  and usertype in (select groupid from  mdrelategroup where  pgroupid = '"+user.getUsertype()+"') and  usertype in " + str ;
 			 }
-			
-		logger.info(sql);	
-	
+
+			logger.info(sql);
+
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
 			try {
@@ -551,12 +554,14 @@ logger.info(sql);
 			}
 			return users;
 		}
-	  
+
+	//  获取主管
+	
 	public static List<User> getUsersZ(int type) {
 		List<Group> listg = GroupManager.getInstance().getListGroupFromPemission(type);
 		String str = StringUtill.GetSqlInGroup(listg);
 		List<User> users = new ArrayList<User>();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from  mduser where  statues = 1 and usertype in " + str ;
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
@@ -574,23 +579,23 @@ logger.info(sql);
 		}
 		return users;
 	}
-	
-	//  获取主管
-	
+
+	// 根据组获取用户
+
 	public static List<String>  getUsersregist(int type) {
-		
+
 		List<String> users = new ArrayList<String>();
-		Connection conn = DB.getConn();
-                    
+		Connection conn = DB.getInstance().getConn();
+
 		String sql = "select * from  mduser where  statues = 1  and usertype = " + type ;
-		  
+
 		Statement stmt = DB.getStatement(conn);
-logger.info(sql); 
-		ResultSet rs = DB.getResultSet(stmt, sql);  
+		logger.info(sql);
+		ResultSet rs = DB.getResultSet(stmt, sql);
 		try {
 			while (rs.next()) {
 				User u= UserManager.getUserFromRs(rs);
-				  
+
 				users.add(u.getUsername());
 			}
 		} catch (SQLException e) {
@@ -602,17 +607,15 @@ logger.info(sql);
 		}
 		return users;
 	}
-	
-	// 根据组获取用户
-	
-	public static List<User> getUsers(String id) { 
+
+	public static List<User> getUsers(String id) {
 		List<User> users = new ArrayList<User>();
-		Connection conn = DB.getConn(); 
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from  mduser where usertype in " +id +" and statues != 2 ";
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
-		try { 
-			while (rs.next()) { 
+		try {
+			while (rs.next()) {
 				User u = UserManager.getUserFromRs(rs);
 				users.add(u);
 			}
@@ -625,12 +628,12 @@ logger.info(sql);
 		}
 		return users;
 	}
-	    
-//   获取活动租户  
-	public static List<User> getUsersL(String id) { 
-	List<User> users = new ArrayList<User>();
-	Connection conn = DB.getConn();
-	String sql = "select * from  mduser where statues != 2 and usertype = " +id;
+
+	//   获取活动租户
+	public static List<User> getUsersL(String id) {
+		List<User> users = new ArrayList<User>();
+		Connection conn = DB.getInstance().getConn();
+		String sql = "select * from  mduser where statues != 2 and usertype = " +id;
 	Statement stmt = DB.getStatement(conn);
 	ResultSet rs = DB.getResultSet(stmt, sql);
 	try {
@@ -646,11 +649,12 @@ logger.info(sql);
 		DB.close(conn);
 	}
 	return users;
-}	
+}
+
    // 根据id获取职工
 	public static User getUesrByID(String id) {
 		User u = new User();
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from  mduser where id = " + id;;
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
@@ -667,8 +671,9 @@ logger.info(sql);
 		}
 		return u;
 	}
+
 	/**
-	 * 
+	 *
 	 * @param users
 	 * @param pageNo
 	 * @param pageSize
@@ -678,12 +683,12 @@ logger.info(sql);
 
 		int totalRecords = -1;
 
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "select * from mduser limit " + (pageNo - 1) * pageSize
 				+ "," + pageSize;
 		Statement stmt = DB.getStatement(conn);
 		ResultSet rs = DB.getResultSet(stmt, sql);
- 
+
 		Statement stmtCount = DB.getStatement(conn);
 		ResultSet rsCount = DB.getResultSet(stmtCount,
 				"select count(*) from user");
@@ -711,10 +716,12 @@ logger.info(sql);
 		}
 		return totalRecords;
 	}
-   // 删除职工
+	// 获取每种产品对应的配单元
+
+	// 删除职工
 	public static boolean delete(int id) {
 		boolean b = false;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 		String sql = "delete from mduser where id = " + id;
 		Statement stmt = DB.getStatement(conn);
 		try {
@@ -727,12 +734,11 @@ logger.info(sql);
 		}
 		return b;
 	}
-    // 获取每种产品对应的配单元
-	
+
 	   public static HashMap<Integer,User> getMap(){
 		   HashMap<Integer,User> users = new HashMap<Integer,User>();
-			Connection conn = DB.getConn();
-			String sql = "select * from  mduser";
+		   Connection conn = DB.getInstance().getConn();
+		   String sql = "select * from  mduser";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
 			try {
@@ -749,11 +755,12 @@ logger.info(sql);
 			}
 			return users;
 	   }
-	// 系统活跃用户数   
-	   public static HashMap<Integer,User> getMapstatues(){
+
+	// 系统活跃用户数
+	public static HashMap<Integer,User> getMapstatues(){
 		   HashMap<Integer,User> users = new HashMap<Integer,User>();
-			Connection conn = DB.getConn();
-			String sql = "select * from  mduser where statues != 2";
+		Connection conn = DB.getInstance().getConn();
+		String sql = "select * from  mduser where statues != 2";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
 			try {
@@ -773,13 +780,13 @@ logger.info(sql);
 	   
 	   public static HashMap<String,User> getMap(String str){
 		   HashMap<String,User> users = new HashMap<String,User>();
-			Connection conn = DB.getConn();  
-			String sql = "select * from  mduser";
+		   Connection conn = DB.getInstance().getConn();
+		   String sql = "select * from  mduser";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
-			try {
-				while (rs.next()) { 
-					User u = UserManager.getUserFromRs(rs);
+		   try {
+			   while (rs.next()) {
+				   User u = UserManager.getUserFromRs(rs);
 					users.put(u.getId()+"", u);
 				}
 			} catch (SQLException e) {
@@ -791,14 +798,6 @@ logger.info(sql);
 			}
 			return users;
 	   }
-	   
-	   
-	   /**
-	    * by wilsonlee
-	    * get static user map
-	    * @return
-	    */
-	   public static HashMap<Integer,User> staticUserMap =  getMap();
 			   
 	   public static HashMap<Integer,User> getStaticMap(){
 		   if(staticUserMap == null ){
@@ -821,8 +820,8 @@ logger.info(sql);
 	  // 获取门店和对应的导购员
 	   public static HashMap<String,List<User>> getMapBranch(){
 		   HashMap<String,List<User>> users = new HashMap<String,List<User>>();
-			Connection conn = DB.getConn();
-			String sql = "select * from  mduser where statues = 1 ";
+		   Connection conn = DB.getInstance().getConn();
+		   String sql = "select * from  mduser where statues = 1 ";
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
 			try { 
@@ -854,8 +853,8 @@ logger.info(sql);
 			String str = StringUtill.GetSqlInGroup(listg);
 			
 			HashMap<Integer,User> users = new HashMap<Integer,User>();
-			Connection conn = DB.getConn();
-			String sql = "select * from  mduser where  usertype in " + str + "  and statues = 1 ";
+		   Connection conn = DB.getInstance().getConn();
+		   String sql = "select * from  mduser where  usertype in " + str + "  and statues = 1 ";
 	logger.info(sql);		
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -877,8 +876,8 @@ logger.info(sql);
 	   public static HashMap<String,List<String>> getMapPid(){
 		    
 		   HashMap<String,List<String>> users = new HashMap<String,List<String>>();
-			Connection conn = DB.getConn(); 
-			String sql = "select * from  mduser  where statues = 1 ";
+		   Connection conn = DB.getInstance().getConn();
+		   String sql = "select * from  mduser  where statues = 1 ";
 //	logger.info(sql);		
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -905,8 +904,8 @@ logger.info(sql);
 	   public static HashMap<String,List<User>> getMapPidUser(){
 		    
 		   HashMap<String,List<User>> users = new HashMap<String,List<User>>();
-			Connection conn = DB.getConn(); 
-			String sql = "select * from  mduser  where statues = 1 ";
+		   Connection conn = DB.getInstance().getConn();
+		   String sql = "select * from  mduser  where statues = 1 ";
 //	logger.info(sql);		
 			Statement stmt = DB.getStatement(conn);
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -933,9 +932,9 @@ logger.info(sql);
 	public static User check(String username, String password)
 			throws UserNotFoundException, PasswordNotCorrectException, UnsupportedEncodingException {
 		User u = null;
-		Connection conn = DB.getConn();
+		Connection conn = DB.getInstance().getConn();
 
-		 
+
 		String sql = "select * from mduser where username = '" + username + "' and statues = 1;";
 		logger.info(sql);
 		Statement stmt = DB.getStatement(conn); 
@@ -992,9 +991,9 @@ logger.info(sql);
 	}
 	
 	public static boolean check(User user){
-		boolean flag = false ;
-		Connection conn = DB.getConn();
-		
+		boolean flag = false;
+		Connection conn = DB.getInstance().getConn();
+
 		String sql = "select * from mduser where usertype = " + user.getUsertype() + "  and id != "+user.getId()+" and statues = 1 "; 
 		
 		logger.info(sql);

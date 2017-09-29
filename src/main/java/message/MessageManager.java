@@ -1,28 +1,20 @@
 package message;
 
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-
+import database.DB;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import user.User;
 
-
-import database.DB;
+import java.sql.*;
   
 public class MessageManager {
 	
 	 protected static Log logger = LogFactory.getLog(MessageManager.class);
 	
 	 public static boolean  save(User user,Message message ){
-		Message messa = MessageManager.getMessagebyoid(message.getOid()+""); 
-		Connection conn = DB.getConn(); 
+		Message messa = MessageManager.getMessagebyoid(message.getOid()+"");
+		 Connection conn = DB.getInstance().getConn();
 		String sql = "";  
 		if(messa == null){    
 			 sql = "insert into mdmessage(oid,mdmessage) values ('"+message.getOid()+"','"+message.getMessage()+"')";
@@ -46,8 +38,8 @@ public class MessageManager {
 	   return true;
 	}	
 		public static Message getMessagebyoid(String id ) {
-			Message Message = null;  
-			Connection conn = DB.getConn(); 
+			Message Message = null;
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdmessage where oid = "+ id + "" ;
 			Statement stmt = DB.getStatement(conn); 
 			ResultSet rs = DB.getResultSet(stmt, sql);
@@ -71,7 +63,7 @@ public class MessageManager {
 		public static boolean delete(String str ) {
 			String ids = "(" + str + ")";
 			boolean b = false;
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "delete from mdMessage where id in " + ids;
 logger.info(sql);
 			Statement stmt = DB.getStatement(conn);
@@ -87,7 +79,7 @@ logger.info(sql);
 		 
 		public static boolean isname(String name){
 			boolean flag = false ;
-			Connection conn = DB.getConn();
+			Connection conn = DB.getInstance().getConn();
 			String sql = "select * from mdMessage where bname = '"+ name +"'";
 			logger.info(sql);
 			Statement stmt = DB.getStatement(conn); 
