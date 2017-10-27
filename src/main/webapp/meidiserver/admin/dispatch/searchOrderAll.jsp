@@ -187,8 +187,20 @@ function intsearch(){
 			<input class="date2" name="dealsendTimeend" type="text" id="dealsendTimeend" onclick="new Calendar().show(this);" />
 			</td>	 
 		</tr>
-		
-		<tr class="bsc">
+
+	<tr class="bsc">
+		<td align="center">预约日期</td>
+		<td align="center" colspan=2>
+			<input class="date2" name="andatestart" type="text" id="andatestart" onclick="new Calendar().show(this);"/>
+			至
+			<input class="date2" name="andateend" type="text" id="andateend" onclick="new Calendar().show(this);"/>
+		</td>
+		<td align="center"></td>
+		<td align="center" colspan=2>
+		</td>
+	</tr>
+
+	<tr class="bsc">
 		    <td align="center" >送货品类</td>
 			<td align="center" >
 	        <input type="text"  name="categoryname" id="categoryname" value=""  />

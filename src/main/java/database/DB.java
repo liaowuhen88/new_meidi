@@ -32,7 +32,7 @@ public class DB {
         dataSource.setTimeBetweenEvictionRunsMillis(60000);
         dataSource.setMinEvictableIdleTimeMillis(300000);
         dataSource.setRemoveAbandoned(true);
-        dataSource.setRemoveAbandonedTimeoutMillis(1800);
+        dataSource.setRemoveAbandonedTimeoutMillis(1000 * 5);
         dataSource.setLogAbandoned(true);
         //dataSource.setFilters("mergeStat");
 
@@ -158,7 +158,6 @@ public class DB {
         Connection conn = null;
         try {
             conn = dataSource.getConnection();
-            logger.info(conn);
         } catch (SQLException e) {
             logger.error("error", e);
         }
