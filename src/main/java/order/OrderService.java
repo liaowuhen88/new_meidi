@@ -1,28 +1,20 @@
 package order;
 
+import aftersale.AfterSale;
+import aftersale.AftersaleAll;
+import branch.BranchService;
+import category.Category;
+import category.CategoryService;
 import group.Group;
-
 import installsale.InstallSale;
 import installsale.InstallSaleManager;
 import installsale.InstallSaleMessage;
 import installsale.InstallSaleMessageManager;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import category.Category;
-import category.CategoryService;
-
 import orderPrint.OrderPrintln;
 import orderPrint.OrderPrintlnManager;
 import orderproduct.OrderProduct;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import product.Product;
 import product.ProductService;
 import user.User;
@@ -31,9 +23,7 @@ import user.UserService;
 import utill.BasicUtill;
 import utill.StringUtill;
 
-import aftersale.AfterSale;
-import aftersale.AftersaleAll;
-import branch.BranchService;
+import java.util.*;
 
 public class OrderService {
 	 
@@ -230,8 +220,8 @@ public class OrderService {
 					    						int type = -1; 
 					    						for(int i=0;i<listo.size();i++){
 					    							Order o = listo.get(i);
-					    							List<OrderProduct> listop = o.getOrderproduct();
-					    							if(listop.size() == 1){
+													List<OrderProduct> listop = o.getOrderProduct();
+													if(listop.size() == 1){
 					    								for(int j=0;j<listop.size();j++){
 						    								OrderProduct op = listop.get(j);
 						    								//int ctype = CategoryService.getmap().get(op.getCategoryId()).getPid();
@@ -3383,7 +3373,7 @@ public class OrderService {
 		if(null != list){ 
 			for(int i=0;i<list.size();i++){
 				Order or = list.get(i);
-				List<OrderProduct> listop = or.getOrderproduct();
+				List<OrderProduct> listop = or.getOrderProduct();
 				if(null != listop){
 					for(int j=0;j<listop.size();j++){
 						OrderProduct op = listop.get(j);

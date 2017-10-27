@@ -171,7 +171,7 @@ logger.info(oo.getStatues());
      	order.setLocate(diqu);
         order.setLocateDetail(locations);
         order.setRemark(remark);
-		order.setOrderproduct(listp);
+			order.setOrderProduct(listp);
 		order.setOrdergift(listg);
 		order.setCategoryID(categoryID);
 		OrderManager.save(user, order); 

@@ -1,26 +1,20 @@
 package servlet;
 
 import gift.Gift;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList; 
-import java.util.Date;
-import java.util.List;
+import order.Order;
+import order.OrderManager;
+import orderPrint.OrderPrintln;
+import orderPrint.OrderPrintlnManager;
+import orderproduct.OrderProduct;
+import user.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import order.Order;
-import order.OrderManager;
-import order.OrderStatues;
-import orderPrint.OrderPrintln;
-import orderPrint.OrderPrintlnManager;
-import orderproduct.OrderProduct;
-
-import user.User;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -194,7 +188,7 @@ public class OrderServletbat extends HttpServlet {
      	order.setLocate(diqu);
         order.setLocateDetail(locations);
         order.setRemark(remark);
-		order.setOrderproduct(listp);
+			order.setOrderProduct(listp);
 		order.setOrdergift(listg);
 		OrderManager.save(user, order); 
         System.out.println("****"+id); 

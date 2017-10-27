@@ -1,48 +1,26 @@
 package orderproduct;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import branch.BranchManager;
+import order.Order;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import branch.BranchManager;
-
-import order.Order;
-import order.OrderManager;
 import product.Product;
 import product.ProductService;
 import utill.DoubleUtill;
 import wilson.upload.UploadOrder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OrderProductService {
-	 protected static Log logger = LogFactory.getLog(BranchManager.class);
-	 
-	public static Map<Integer,List<OrderProduct>> OrPMap ;
 	public static boolean flag = false ;
-	 
-	public static Map<Integer,List<OrderProduct>> getStaticOrderStatuesM(){
-		init(); 
-		if(OrPMap == null){
-			OrPMap = OrderProductManager.getOrderStatuesM();
-		}
-		return OrPMap;
-	}
-	
-	public static void init(){
-		if(flag){
-			OrPMap = OrderProductManager.getOrderStatuesM();
-		}
-		flag = false ;
-	}
-	
+	protected static Log logger = LogFactory.getLog(BranchManager.class);
+
 	//取Order中statues = 1的有多个个
 	public static int getTotalNum(Order o){
 		int result  = 0;
-		OrderProduct op = new OrderProduct();
-		List<OrderProduct> opList = o.getOrderproduct();
+		OrderProduct op;
+		List<OrderProduct> opList = o.getOrderProduct();
 	
 		for(int i = 0 ; i < opList.size() ; i ++){
 			op = opList.get(i);
@@ -56,8 +34,8 @@ public class OrderProductService {
 	//Order o = > 123.2
 	public static Double getTotalPrice(Order o){
 		Double result  = 0.0;
-		OrderProduct op = new OrderProduct();
-		List<OrderProduct> opList = o.getOrderproduct();
+		OrderProduct op;
+		List<OrderProduct> opList = o.getOrderProduct();
 	
 		for(int i = 0 ; i < opList.size() ; i ++){
 			op = opList.get(i);
@@ -131,7 +109,7 @@ public class OrderProductService {
 		OrderProduct op = new OrderProduct();
 		List<OrderProduct> opList = new ArrayList<OrderProduct>();
 		String result = "";
-		opList = o.getOrderproduct();
+		opList = o.getOrderProduct();
 		
 		Double totalPrice_db = getTotalPrice(o);
 		int num = getTotalNum(o);

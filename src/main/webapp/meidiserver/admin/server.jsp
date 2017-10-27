@@ -1,4 +1,21 @@
-<%@ page language="java" import="java.util.*,orderproduct.*,saledealsend.*,uploadtotalgroup.*,installsale.*,product.*,message.*,inventory.*,branchtype.*,user.*,utill.*,locate.*,branch.*,order.*,orderPrint.*,category.*,group.*,grouptype.*;" pageEncoding="utf-8"%>
+<%@ page language="java"
+		 import="branch.Branch,branch.BranchManager,branchtype.BranchTypeManager,category.Category,category.CategoryManager,group.Group,group.GroupManager,grouptype.GrouptypeManager,installsale.InstallSale,installsale.InstallSaleManager,installsale.InstallSaleMessage,inventory.*,locate.LocateManager,message.Message,message.MessageManager,order.Order,order.OrderManager,orderproduct.OrderProduct"
+		 pageEncoding="utf-8" %>
+<%@ page import="orderproduct.OrderProductManager" %>
+<%@ page import="orderproduct.OrderProductService" %>
+<%@ page import="product.Product" %>
+<%@ page import="product.ProductService" %>
+<%@ page import="saledealsend.Saledealsend" %>
+<%@ page import="saledealsend.SaledealsendManager" %>
+<%@ page import="saledealsend.SaledealsendMessage" %>
+<%@ page import="uploadtotalgroup.UploadTotalGroup" %>
+<%@ page import="uploadtotalgroup.UploadTotalGroupManager" %>
+<%@ page import="user.User" %>
+<%@ page import="user.UserManager" %>
+<%@ page import="utill.DBUtill" %>
+<%@ page import="utill.NumbleUtill" %>
+<%@ page import="utill.StringUtill" %>
+<%@ page import="java.util.*" %>
 <%
 
 request.setCharacterEncoding("utf-8");
@@ -75,7 +92,7 @@ if("deleOrder".equals(method)){
 }else if("grouptypeupdate".equals(method)){ 
 	String bid = request.getParameter("bid");
 	String c = request.getParameter("id");
-	GrouptypeManager.update(c, bid) ;    
+	GrouptypeManager.update(c, bid);
 	//branchtypeupdate
 }else if("jihuo".equals(method)){ 
 	String id = request.getParameter("id");
@@ -515,7 +532,7 @@ if("deleOrder".equals(method)){
 						
 						List<OrderProduct>  listop = new ArrayList<OrderProduct>();
 						listop.add(o);
-						order.setOrderproduct(listop);
+					order.setOrderProduct(listop);
 						
 						List<String> sqls = OrderProductManager.save(Integer.valueOf(oid), order);
 						DBUtill.sava(sqls);

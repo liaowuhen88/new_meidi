@@ -17,9 +17,7 @@ import utill.TimeUtill;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
   
 public class OrderProductManager {
 
@@ -59,9 +57,9 @@ public class OrderProductManager {
         return sql ;
 	}
 	
-	   public static List<String> save(int id, Order orderr) { 
-               
-		   List<OrderProduct> orders = orderr.getOrderproduct();
+	   public static List<String> save(int id, Order orderr) {
+
+		   List<OrderProduct> orders = orderr.getOrderProduct();
 		   List<String> sqls = new ArrayList<String>();
              
 			 for(int i=0;i<orders.size();i++){ 
@@ -77,9 +75,9 @@ public class OrderProductManager {
 	   }
 	    
 	   
-	   public static List<String> saveTuihuo(int id, Order orderr) { 
-           
-		   List<OrderProduct> orders = orderr.getOrderproduct();
+	   public static List<String> saveTuihuo(int id, Order orderr) {
+
+		   List<OrderProduct> orders = orderr.getOrderProduct();
 		   List<String> sqls = new ArrayList<String>();
              
 			 for(int i=0;i<orders.size();i++){ 
@@ -211,36 +209,8 @@ public class OrderProductManager {
 				DB.close(conn);
 			 }
 			return list;
-	   } 
-	    
-        public static Map<Integer,List<OrderProduct>> getOrderStatuesM(){
-		   
-        	    Map<Integer,List<OrderProduct>> Orders = new HashMap<Integer,List<OrderProduct>>();
-			Connection conn = DB.getInstance().getConn();
-				Statement stmt = DB.getStatement(conn);
-				String sql = "select * from  mdorderproduct ";
-				ResultSet rs = DB.getResultSet(stmt, sql);
-				try { 
-					while (rs.next()) {
-						OrderProduct Order = getOrderStatuesFromRs(rs);
-						List<OrderProduct> list = Orders.get(Order.getOrderid());
-			 			if(list == null){ 
-							list = new ArrayList<OrderProduct>();
-							Orders.put(Order.getOrderid(),list);
-						}
-						list.add(Order);
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} finally {
-					DB.close(stmt);
-					DB.close(rs);
-					DB.close(conn);
-				 }
-				return Orders;
-		 }
-        
-        
+	   }
+
         public static  String getupdateIsSubmitsql(String ids,String statues){
  		   
     	    String sql = " update mdorderproduct set issubmit = "+statues+" where orderid in ("+ ids+")";
@@ -277,11 +247,11 @@ public class OrderProductManager {
 		   OrderProduct p = null;
 			try {
 				p = new OrderProduct();
-				String saletype = rs.getString("saletype");
-				String sendtype = rs.getString("sendtype");
-				p.setId(rs.getInt("id"));
-				p.setCategoryId(rs.getInt("categoryID"));
-				p.setCount(rs.getInt("count"));
+				String saletype = rs.getString("mdorderproduct.saletype");
+				String sendtype = rs.getString("mdorderproduct.sendtype");
+				p.setId(rs.getInt("mdorderproduct.id"));
+				p.setCategoryId(rs.getInt("mdorderproduct.categoryID"));
+				p.setCount(rs.getInt("mdorderproduct.count"));
 				p.setSaleType(saletype);
 				p.setSendType(sendtype);
 				if(!StringUtill.isNull(saletype)){
@@ -289,15 +259,15 @@ public class OrderProductManager {
 				}else if(!StringUtill.isNull(sendtype)){    
 					p.setTypeName(ProductService.getIDmap().get(Integer.valueOf(sendtype)).getType());
 				}
-				p.setOrderid(Integer.valueOf(rs.getString("orderid")));
-				p.setStatues(rs.getInt("statues"));   
-				p.setCategoryName(rs.getString("categoryname"));
-				p.setSalestatues(rs.getInt("salestatues")); 
-				p.setSubtime(rs.getString("subtime")); 
-				p.setPrice(rs.getDouble("price")); 
-				p.setBarcode(rs.getString("barcode"));
-				p.setBatchNumber(rs.getString("batchNumber"));
-				p.setIsSubmit(rs.getInt("issubmit")); 
+				p.setOrderid(Integer.valueOf(rs.getString("mdorderproduct.orderid")));
+				p.setStatues(rs.getInt("mdorderproduct.statues"));
+				p.setCategoryName(rs.getString("mdorderproduct.categoryname"));
+				p.setSalestatues(rs.getInt("mdorderproduct.salestatues"));
+				p.setSubtime(rs.getString("mdorderproduct.subtime"));
+				p.setPrice(rs.getDouble("mdorderproduct.price"));
+				p.setBarcode(rs.getString("mdorderproduct.barcode"));
+				p.setBatchNumber(rs.getString("mdorderproduct.batchNumber"));
+				p.setIsSubmit(rs.getInt("mdorderproduct.issubmit"));
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

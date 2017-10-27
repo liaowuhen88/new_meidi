@@ -840,8 +840,8 @@ public class PrintServlet extends HttpServlet {
 				for (int i = 0; i < list.size(); i++){
 					
 					Order order = list.get(i);
-                   
-					List<OrderProduct> listop = order.getOrderproduct();
+
+					List<OrderProduct> listop = order.getOrderProduct();
 					
 					for(int m=0;m<listop.size();m++){
 						OrderProduct op = listop.get(m);

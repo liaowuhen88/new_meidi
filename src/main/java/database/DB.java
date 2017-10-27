@@ -23,6 +23,11 @@ public class DB {
         logger.info("DataSource");
         dataSource = new DruidDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+
+       /* dataSource.setUrl("jdbc:mysql://localhost:3306/sr_meidi");
+        dataSource.setUsername("root");
+        dataSource.setPassword("liaowuhen");
+*/
         dataSource.setUrl("jdbc:mysql://liaowuhen.gotoftp3.com:3306/liaowuhen");
         dataSource.setUsername("liaowuhen");
         dataSource.setPassword("liaowuhen");

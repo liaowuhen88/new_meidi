@@ -65,7 +65,7 @@ public class InstallSaleMessageManager {
 	 
 	 public static int getprice(List<InstallSaleMessage> list , Order o ){
 		 int price = 0 ;
-		 List<OrderProduct> listop = o.getOrderproduct();
+		 List<OrderProduct> listop = o.getOrderProduct();
 		 //System.out.println(listop.size()); 
 		 for(int j=0;j<listop.size();j++){
 			     OrderProduct op = listop.get(j);

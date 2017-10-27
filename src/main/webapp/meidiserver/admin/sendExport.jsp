@@ -1,14 +1,18 @@
-<%@page import="utill.StringUtill"%>
-<%@page import="wilson.salaryCalc.SalaryCalcManager"%>
-<%@page import="wilson.salaryCalc.SalaryResult"%>
-<%@ page language="java" import="java.util.*,wilson.upload.*,group.*,utill.*,orderproduct.*,order.*,saledealsend.*,user.*,wilson.matchOrder.*,user.*,wilson.salaryCalc.*,java.text.SimpleDateFormat;" pageEncoding="UTF-8"  contentType="text/html;charset=utf-8"%>
-    
+<%@page import="group.Group" %>
+<%@page import="order.Order" %>
+<%@page import="order.OrderManager" %>
+<%@ page language="java"
+		 import="orderproduct.OrderProduct,saledealsend.SaladealsendMessageManager,saledealsend.Saledealsend,saledealsend.SaledealsendManager,saledealsend.SaledealsendMessage,user.User,user.UserManager,user.UserService,utill.BasicUtill,utill.StringUtill,java.text.SimpleDateFormat,java.util.ArrayList"
+		 pageEncoding="UTF-8" contentType="text/html;charset=utf-8" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+
 <%    
 	request.setCharacterEncoding("utf-8");
 	User user = (User)session.getAttribute("user");
-	List<User> listS = UserManager.getUsers(user,Group.send); 
-	
-	Map<String ,Order> map = null;
+	List<User> listS = UserManager.getUsers(user,Group.send);
+
+	Map<Integer, Order> map = null;
 	String type = request.getParameter("type");
 	List<Saledealsend> listsa = null;
 	Saledealsend sa = null;
@@ -346,7 +350,7 @@ if(bsa){
 			// }
 			 
 			 for(int j=0;j<ordersid.length;j++){
-				 Order o = map.get(ordersid[j]);
+				 Order o = map.get(Integer.valueOf(ordersid[j]));
 				 x++;
 				 
 				// List<OrderProduct> listooo = o.getOrderproduct();

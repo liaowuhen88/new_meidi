@@ -1,49 +1,40 @@
 package servlet;
 
-import gift.Gift;
-import group.Group;
-import group.GroupService;
-
-import java.io.IOException;
-import java.util.ArrayList; 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import aftersale.AfterSale;
 import aftersale.AfterSaleManager;
 import aftersale.AfterSaleProduct;
 import aftersale.AfterSaleProductManager;
-
 import category.Category;
 import category.CategoryManager;
 import category.CategoryService;
-
-
+import gift.Gift;
+import group.Group;
 import order.Order;
 import order.OrderManager;
 import orderPrint.OrderPrintln;
 import orderPrint.OrderPrintlnManager;
 import orderproduct.OrderProduct;
 import orderproduct.OrderProductManager;
-import orderproduct.OrderProductService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import product.Product;
 import product.ProductService;
-
 import user.User;
 import user.UserManager;
 import utill.DBUtill;
 import utill.RemarkUtill;
 import utill.StringUtill;
 import utill.TimeUtill;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 核心请求处理类
@@ -335,7 +326,7 @@ public class OrderServlet extends HttpServlet {
 		     	order.setLocate(diqu);
 		        order.setLocateDetail(locations);
 		        order.setRemark(remark);
-				order.setOrderproduct(listp);
+				 order.setOrderProduct(listp);
 				order.setOrdergift(listg); 
 				order.setSubmitTime(submitTime);
 				order.setPrintlnid(pid);   
@@ -383,10 +374,9 @@ public class OrderServlet extends HttpServlet {
 		        String oid = request.getParameter("orderid");
 		        
 		    	Order oldOrder = OrderManager.getOrderID(user, Integer.valueOf(oid));
-		    	Map<Integer,List<OrderProduct>> OrPMap = OrderProductService.getStaticOrderStatuesM();
-		    	List<OrderProduct> listp = new ArrayList<OrderProduct>();  	
-		    	List<OrderProduct> list = OrPMap.get(Integer.valueOf(oid));
-			  
+		    	List<OrderProduct> listp = new ArrayList<OrderProduct>();
+				 List<OrderProduct> list = oldOrder.getOrderProduct();
+
 				String[] producs = request.getParameterValues("product");
 				    // 送货状态   
 				for(int i=0;i<producs.length;i++){	
@@ -443,7 +433,7 @@ public class OrderServlet extends HttpServlet {
 
 				order.setRemark(remark+".换货单，务必拉回残机。");
 			    order.setOderStatus(20+"");
-				order.setOrderproduct(listp);
+				 order.setOrderProduct(listp);
 				
 				order.setSubmitTime(oldOrder.getSubmitTime());
 				order.setPrintlnid(oldOrder.getPrintlnid());  
@@ -480,9 +470,6 @@ public class OrderServlet extends HttpServlet {
 			    order.setOderStatus(30+"");
                 order.setSaleTime(saleTime);
 				order.setImagerUrl(order.getId()+"");
-				 
-				order.setOrderproduct(order.getOrderproduct());
-				
 				order.setOrdergift(order.getOrdergift());
 				
 				order.setId(0);
@@ -677,7 +664,7 @@ public class OrderServlet extends HttpServlet {
 				if(null != list && OrderProduct.query == Integer.valueOf(statues)){
 					for(int i=0;i<list.size();i++){
 						Order or = list.get(i);
-						List<OrderProduct> listop = or.getOrderproduct();
+						List<OrderProduct> listop = or.getOrderProduct();
 						if(null != listop){
 							for(int j=0;j<listop.size();j++){
 								OrderProduct op = listop.get(j);

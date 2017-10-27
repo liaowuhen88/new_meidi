@@ -7,7 +7,6 @@ import gift.GiftService;
 import order.Order;
 import order.OrderManager;
 import orderproduct.OrderProduct;
-import orderproduct.OrderProductService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import user.User;
@@ -38,9 +37,9 @@ logger.info(pstmt);
 						Order oldOrder = OrderManager.getOrderID(user, oid);
 						  
 						Map<Integer,List<Gift>> gMap = GiftService.getmap();
-						Map<Integer,List<OrderProduct>> OrPMap = OrderProductService.getStaticOrderStatuesM();
-					    List<OrderProduct> listp = OrPMap.get(oid);
-					    for(int i=0;i<listp.size();i++){
+
+						List<OrderProduct> listp = oldOrder.getOrderProduct();
+						for(int i=0;i<listp.size();i++){
 					    	OrderProduct or = listp.get(i);
 					    	if(or.getStatues() == 0){
 					    		or.setSalestatues(1); 
@@ -64,7 +63,7 @@ logger.info(pstmt);
 				        order.setLocateDetail(oldOrder.getLocateDetail()); 
 				        order.setRemark(oldOrder.getRemark()+"换货单，务必拉回残机。");
 				        order.setOderStatus(20+"");
-						order.setOrderproduct(listp);
+						order.setOrderProduct(listp);
 						order.setOrdergift(listg);  
 						order.setSubmitTime(oldOrder.getSubmitTime());
 						order.setPrintlnid(TimeUtill.getdatesimple());  

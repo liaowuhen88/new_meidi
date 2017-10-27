@@ -3,7 +3,6 @@ package order;
 import database.DB;
 import gift.GiftManager;
 import group.Group;
-import group.GroupManager;
 import orderPrint.OrderPrintln;
 import orderPrint.OrderPrintlnManager;
 import orderproduct.OrderProduct;
@@ -24,25 +23,6 @@ public class OrderManager {
     public static SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     protected static Log logger = LogFactory.getLog(OrderManager.class);
 
-    public static int updatePrint2(int statues, String id, String pid) {
-        int flag = -1;
-        Connection conn = DB.getInstance().getConn();
-        //insert into  mdgroup( id ,groupname, detail,statues, permissions, products) VALUES (null,?,?,?,?,?)";
-        String sql = "update mdorder set printSatues= ? , printlnid = " + pid + " where id = " + id;
-        PreparedStatement pstmt = DB.prepare(conn, sql);
-        try {
-            pstmt.setInt(1, statues);
-            logger.info(pstmt);
-            flag = pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DB.close(pstmt);
-            DB.close(conn);
-        }
-        return flag;
-    }
-
     public static int updateMessage(String phone1, String andate, String locations, String POS, String sailId, String check, String oid, String remark, String saledate, String diqu) {
         int flag = -1;
         List<String> sqls = new ArrayList<String>();
@@ -52,7 +32,6 @@ public class OrderManager {
         } else {
             andate = "'" + andate + "'";
         }
-        //insert into  mdgroup( id ,groupname, detail,statues, permissions, products) VALUES (null,?,?,?,?,?)";
         String sql = "update mdorder set phone1= '" + phone1 + "' , andate = " + andate + " , locateDetail = '" + locations + "', pos = '" + POS + "', sailId = '" + sailId + "' ,checked ='" + check + "' , remark = '" + remark + "' ,saledate = '" + saledate + "' ,locates = '" + diqu + "' where id = " + oid;
 
         String sql1 = "update mdorder set posRemark = 0 where pos != '" + POS + "' and id = " + oid;
@@ -172,7 +151,6 @@ public class OrderManager {
 
     }
 
-
     public static Map<String, String> getDeliveryStatuesMap() {
         Map<String, String> map = new HashMap<String, String>();
         map.put(0 + "", "需配送安装");
@@ -188,10 +166,6 @@ public class OrderManager {
 
     }
 
-    //by wilsonlee
-    /*public static int updateStatues(String method ,String statues,String id) {
-		return updateStatues(new User(),method,statues,id);
-	}*/
     // 确认厂送票已回
     public static int updateStatues(User user, String method, String statues, String id) {
 
@@ -224,10 +198,6 @@ public class OrderManager {
         }
         String ids = "(" + id + ")";
         String sql = "";
-
-        //logger.info("orderCharge".equals(method));
-        //logger.info(UserManager.checkPermissions(user, Group.dealSend,"w"));
-        //logger.info(StringUtill.GetJson(user));
         logger.info(method);
         if (UserManager.checkPermissions(user, Group.callback, "w") && "wenyuancallback".equals(method)) {
             logger.info(1);
@@ -272,27 +242,6 @@ public class OrderManager {
         return flag;
     }
 
-
-    // 第一次配单
-    public static int updatePeidan(int statues, int id) {
-        int count = 0;
-        Connection conn = DB.getInstance().getConn();
-        //insert into  mdgroup( id ,groupname, detail,statues, permissions, products) VALUES (null,?,?,?,?,?)";
-        String sql = "update mdorder set dealSendid = ? where id = " + id;
-
-        PreparedStatement pstmt = DB.prepare(conn, sql);
-        try {
-            pstmt.setInt(1, statues);
-            count = pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DB.close(pstmt);
-            DB.close(conn);
-        }
-        return count;
-    }
-
     // 第二次配单
 
     public static boolean getName(String method, String c, String branch) {
@@ -306,7 +255,6 @@ public class OrderManager {
             sql = "select * from mdorder where " + method + "  = '" + c + "'  and orderbranch = '" + branch + "' ";
         }
 
-        logger.info(sql);
         Statement stmt = DB.getStatement(conn);
         ResultSet rs = DB.getResultSet(stmt, sql);
         try {
@@ -328,10 +276,8 @@ public class OrderManager {
         boolean flag = false;
         Connection conn = DB.getInstance().getConn();
 
-
         String sql = "select * from mdorderproduct where statues = 1 and orderid = " + oid;
 
-        logger.info(sql);
         Statement stmt = DB.getStatement(conn);
         ResultSet rs = DB.getResultSet(stmt, sql);
         try {
@@ -348,70 +294,10 @@ public class OrderManager {
         return flag;
     }
 
-
-    public static void updateSendstat(int statues, int sid, int oid) {
-
-        Connection conn = DB.getInstance().getConn();
-
-
-        //insert into  mdgroup( id ,groupname, detail,statues, permissions, products) VALUES (null,?,?,?,?,?)";
-        String sql = "update mdorder set deliveryStatues = ? where id = " + oid;
-        PreparedStatement pstmt = DB.prepare(conn, sql);
-        try {
-            pstmt.setInt(1, statues);
-            System.out.println(sql);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DB.close(pstmt);
-            DB.close(conn);
-        }
-    }
-
-    // select top 1 * from table order by id desc
-    public static int getMaxid() {
-        int id = 1;
-        Connection conn = DB.getInstance().getConn();
-        Statement stmt = DB.getStatement(conn);
-        String sql = "select max(id)+1 as id from mdorder";
-        ResultSet rs = DB.getResultSet(stmt, sql);
-        try {
-            while (rs.next()) {
-                id = rs.getInt("id");
-                logger.info(id);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DB.close(stmt);
-            DB.close(rs);
-            DB.close(conn);
-        }
-        return id;
-
-    }
-
     public static Order getMaxOrder() {
-        Order order = null;
-        Connection conn = DB.getInstance().getConn();
-        Statement stmt = DB.getStatement(conn);
-        //  select top 1 * from table order by id desc
-        // select * from table where id in (select max(id) from table)
-        String sql = "select * from mdorder where id in (select max(id) from mdorder)";
-        ResultSet rs = DB.getResultSet(stmt, sql);
-        try {
-            while (rs.next()) {
-                order = OrderManager.gerOrderFromRs(rs);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DB.close(stmt);
-            DB.close(rs);
-            DB.close(conn);
-        }
-        return order;
+        String sql = "select * from (select * from mdorder order by id desc limit 1) o  JOIN mdorderproduct mp on mp.orderid = o.id ";
+        List<Order> orders = getOrdersBySql(sql);
+        return orders.get(0);
 
     }
 
@@ -424,7 +310,6 @@ public class OrderManager {
         Connection conn = DB.getInstance().getConn();
         Statement stmt = DB.getStatement(conn);
         String sql = "select id from mdorder where id = " + id;
-        logger.info(sql);
         ResultSet rs = DB.getResultSet(stmt, sql);
         try {
             while (rs.next()) {
@@ -440,7 +325,7 @@ public class OrderManager {
         return flag;
     }
 
-    public static int save(User user, Order order) {
+    public static synchronized int save(User user, Order order) {
         int flag = -1;
         List<String> sqls = new ArrayList<String>();
 
@@ -504,7 +389,7 @@ public class OrderManager {
             String printlnid = "";
             if (order.getOderStatus().equals(20 + "")) {
                  /*String sql1 = "insert into  mdorderupdateprint (id, message ,statues , orderid,mdtype ,pGroupId,uid,groupid)" +
-	                     "  values ( null, '换货申请', 0,"+order.getImagerUrl()+","+OrderPrintln.huanhuo+","+user.getUsertype()+","+user.getId()+","+user.getUsertype()+")";
+                         "  values ( null, '换货申请', 0,"+order.getImagerUrl()+","+OrderPrintln.huanhuo+","+user.getUsertype()+","+user.getId()+","+user.getUsertype()+")";
 
 		    	 sqls.add(sql1);*/
 
@@ -562,15 +447,10 @@ public class OrderManager {
 
         boolean flag = UserManager.checkPermissions(user, type);
 
-        // boolean flagSearch = UserManager.checkPermissions(user, type,"r");
-
         String str = "";
         if (num != -1) {
             str = "  limit " + ((page - 1) * num) + "," + num;
         }
-
-        List<Order> Orders = new ArrayList<Order>();
-
         String sql = "";
 
         //logger.info(f);
@@ -765,32 +645,9 @@ public class OrderManager {
                 }
             }
         }
+        List<Order> orders = getOrdersBySql(sql);
 
-        if ("".equals(sql)) {
-            return null;
-        } else {
-            if (!sql.contains("limit")) {
-                sql = sql + " limit 0,500";
-            }
-        }
-        logger.info(sql);
-        Connection conn = DB.getInstance().getConn();
-        Statement stmt = DB.getStatement(conn);
-
-        ResultSet rs = DB.getResultSet(stmt, sql);
-        try {
-            while (rs.next()) {
-                Order p = gerOrderFromRs(rs);
-                Orders.add(p);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DB.close(stmt);
-            DB.close(rs);
-            DB.close(conn);
-        }
-        return Orders;
+        return orders;
     }
 
     public static int getOrderlistcount(User user, int type, int statues, int num, int page, String sort, String search) {
@@ -978,123 +835,21 @@ public class OrderManager {
     //未消单的Order
     public static List<Order> getUnConfirmedDBOrders(String time) {
 
-
-        //boolean flag = UserManager.checkPermissions(user, Group.dealSend);
-        //flag = true;
-        List<Order> Orders = new ArrayList<Order>();
-
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 0 and statuesChargeSale is null and oderStatus not in (20)  and saledate <= '" + time + "'  order by orderbranch";
 
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
+        List<Order> orders = getOrdersBySql(sql);
 
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
+        return orders;
 
     }
 
     //wrote by wilsonlee 2014-11-21
     //未结款的Order
     public static List<Order> getUnCheckedDBOrders(String time) {
-
-
-        //boolean flag = UserManager.checkPermissions(user, Group.dealSend);
-        //flag = true;
-        List<Order> Orders = new ArrayList<Order>();
-
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is null and oderStatus not in (20)  and saledate <= '" + time + "'  order by orderbranch";
+        List<Order> orders = getOrdersBySql(sql);
 
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
-
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
-
-    }
-
-    //wrote by wilsonlee 2014-11-21
-    //未结款的Order
-    public static List<Order> getOrdersBySql(String sql) {
-        List<Order> Orders = new ArrayList<Order>();
-
-        Connection conn = DB.getInstance().getConn();
-        Statement stmt = DB.getStatement(conn);
-        ResultSet rs = DB.getResultSet(stmt, sql);
-
-        try {
-            while (rs.next()) {
-                Order p = gerOrderFromRs(rs);
-                Orders.add(p);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DB.close(stmt);
-            DB.close(rs);
-            DB.close(conn);
-        }
-        return Orders;
-
-    }
-
-    //wrote by wilsonlee
-    //未结款的Order
-    public static List<Order> getUnCheckedDBOrders() {
-
-
-        //boolean flag = UserManager.checkPermissions(user, Group.dealSend);
-        //flag = true;
-        List<Order> Orders = new ArrayList<Order>();
-
-        String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statues3 = 0 and oderStatus not in (20)  order by orderbranch";
-
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
-
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
+        return orders;
 
     }
 
@@ -1103,29 +858,9 @@ public class OrderManager {
     public static List<Order> getCheckedDBOrders(String time) {
         //boolean flag = UserManager.checkPermissions(user, Group.dealSend);
         //flag = true;
-        List<Order> Orders = new ArrayList<Order>();
-
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is not null and oderStatus not in (20) and saledate <= '" + time + "'  order by orderbranch";
-
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
-
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
+        List<Order> orders = getOrdersBySql(sql);
+        return orders;
     }
 
     //wrote by wilsonlee
@@ -1136,26 +871,8 @@ public class OrderManager {
         List<Order> Orders = new ArrayList<Order>();
 
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statues3 = 1 and oderStatus not in (20) order by orderbranch";
-
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
-
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
+        List<Order> orders = getOrdersBySql(sql);
+        return orders;
     }
 
     public static void main(String args[]) {
@@ -1169,287 +886,65 @@ public class OrderManager {
 
     //根据门店获取Order 2014-11-21
     public static List<Order> getUnConfirmedDBOrdersbyBranch(String branchid, String time) {
-        //boolean flag = UserManager.checkPermissions(user, Group.dealSend);
-        //flag = true;
-        List<Order> Orders = new ArrayList<Order>();
 
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 0 and statuesChargeSale is null  and oderStatus not in (20) and orderbranch in (" + branchid + ")  and saledate <= '" + time + "' order by orderbranch";
-        // logger.info(sql);
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
-
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
+        List<Order> orders = getOrdersBySql(sql);
+        return orders;
     }
 
     //根据门店类别获取Order 2014-11-21
     public static List<Order> getUnConfirmedDBOrdersbyBranchType(String branchid, String time) {
-        //boolean flag = UserManager.checkPermissions(user, Group.dealSend);
-        //flag = true;
-        List<Order> Orders = new ArrayList<Order>();
-
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 0 and statuesChargeSale is null and oderStatus not in (20)  and orderbranch in (select id from mdbranch where pid in ( " + branchid + ")) and saledate <= '" + time + "'  order by orderbranch";
-
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
-
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
+        List<Order> orders = getOrdersBySql(sql);
+        return orders;
     }
 
     //根据门店获取Order 2014-11-21
     public static List<Order> getUnCheckedDBOrdersbyBranch(String branchid, String time) {
-        //boolean flag = UserManager.checkPermissions(user, Group.dealSend);
-        //flag = true;
-        List<Order> Orders = new ArrayList<Order>();
-
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is null  and oderStatus not in (20) and orderbranch in (" + branchid + ")  and saledate <= '" + time + "' order by orderbranch";
-        // logger.info(sql);
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
-
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
+        List<Order> orders = getOrdersBySql(sql);
+        return orders;
     }
 
     //根据门店类别获取Order 2014-11-21
     public static List<Order> getUnCheckedDBOrdersbyBranchType(String branchid, String time) {
-        //boolean flag = UserManager.checkPermissions(user, Group.dealSend);
-        //flag = true;
-        List<Order> Orders = new ArrayList<Order>();
-
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is null and oderStatus not in (20)  and orderbranch in (select id from mdbranch where pid in ( " + branchid + ")) and saledate <= '" + time + "'  order by orderbranch";
-
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
-
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
+        List<Order> orders = getOrdersBySql(sql);
+        return orders;
     }
 
     //2014-11-21
     public static List<Order> getCheckedDBOrdersbyBranchType(String branchid, String time) {
-        //boolean flag = UserManager.checkPermissions(user, Group.dealSend);
-        //flag = true;
-        List<Order> Orders = new ArrayList<Order>();
 
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is not null and oderStatus not in (20)  and orderbranch in (select id from mdbranch where pid in ( " + branchid + ")) and saledate <= '" + time + "' order by orderbranch ";
-
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
-
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
+        List<Order> orders = getOrdersBySql(sql);
+        return orders;
     }
 
     public static List<Order> getListByids(String ids) {
-        //boolean flag = UserManager.checkPermissions(user, Group.dealSend);
-        //flag = true;
-        List<Order> Orders = new ArrayList<Order>();
 
         String sql = "select * from  mdorder  where id in (" + ids + ")";
-
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
-
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
+        List<Order> orders = getOrdersBySql(sql);
+        return orders;
     }
 
     //2014-11-21
     public static List<Order> getCheckedDBOrdersbyBranch(String branchid, String time) {
-        //boolean flag = UserManager.checkPermissions(user, Group.dealSend);
-        //flag = true;
-        List<Order> Orders = new ArrayList<Order>();
 
         String sql = "select * from  mdorder  where statues1 = 1 and statues2 = 1 and statuesChargeSale is not null and oderStatus not in (20)  and orderbranch in ( " + branchid + ") and saledate <= '" + time + "'  order by orderbranch";
-
-        if (true) {
-            Connection conn = DB.getInstance().getConn();
-            Statement stmt = DB.getStatement(conn);
-            ResultSet rs = DB.getResultSet(stmt, sql);
-
-            try {
-                while (rs.next()) {
-                    Order p = gerOrderFromRs(rs);
-                    Orders.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(stmt);
-                DB.close(rs);
-                DB.close(conn);
-            }
-        }
-        return Orders;
+        List<Order> orders = getOrdersBySql(sql);
+        return orders;
     }
 
     public static Order getOrderID(User user, int id) {
-
-        Order orders = null;
-        String sql = "";
-        sql = "select * from  mdorder where id = " + id;
-
-        logger.info(sql);
-        Connection conn = DB.getInstance().getConn();
-        Statement stmt = DB.getStatement(conn);
-        ResultSet rs = DB.getResultSet(stmt, sql);
-        try {
-            while (rs.next()) {
-                orders = gerOrderFromRs(rs);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DB.close(stmt);
-            DB.close(rs);
-            DB.close(conn);
-        }
-        return orders;
+        String sql = "select * from  mdorder where id = " + id;
+        List<Order> orders = getOrdersBySql(sql);
+        return orders.get(0);
     }
 
-    public static Map<String, Order> getByListOrderProduct(User user, List<OrderProduct> list) {
-        String id = "";
-        for (int i = 0; i < list.size(); i++) {
-            id += list.get(i).getOrderid() + ",";
-        }
-        if (!StringUtill.isNull(id)) {
-            id = id.substring(0, id.length() - 1);
-        }
-        Map<String, Order> map = getOrdermapByIds(user, id);
-        return map;
-    }
-
-    public static Map<String, Order> getOrdermapByIds(User user, String id) {
-        Map<String, Order> orders = new HashMap<String, Order>();
+    public static Map<Integer, Order> getOrdermapByIds(User user, String id) {
         String sql = "select * from  mdorder where id in (" + id + ")";
-        logger.info(sql);
-        Connection conn = DB.getInstance().getConn();
-        Statement stmt = DB.getStatement(conn);
-        ResultSet rs = DB.getResultSet(stmt, sql);
-        try {
-            while (rs.next()) {
-                Order order = gerOrderFromRs(rs);
-                orders.put(order.getId() + "", order);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DB.close(stmt);
-            DB.close(rs);
-            DB.close(conn);
-        }
-        return orders;
-    }
-
-    public static String getSql(User user, int type) {
-
-        List<Group> listg = GroupManager.getInstance().getListGroupFromPemission(type);
-
-        boolean flag = false;
-        for (int i = 0; i < listg.size(); i++) {
-            Group g = listg.get(i);
-            if (user.getUsertype() == g.getId()) {
-                flag = true;
-            }
-        }
-
-        String sql = "";
-        if (user.getUsertype() == 1 && Group.send != type && Group.dealSend != type) {
-            sql = "select * from  mdorder where 1 =1 ";
-        } else if (flag && Group.send == type) {
-            sql = "select * from  mdorder where sendId = " + user.getId();
-        } else if (flag && Group.sale == type) {
-            sql = "select * from  mdorder where  orderbranch = '" + user.getBranch() + "' " + "and  deliveryStatues= 0 order by saledate";
-        } else if (flag && Group.dealSend == type) {
-            sql = "select * from  mdorder where saleID in  (select id from mdgroup where pid = " + user.getId() + ")  or (mdorder.id in (select orderid from mdorderupdateprint where mdtype = 3) and sendId != 0)";
-        }
-        return sql;
+        return getOrdersMapBySql(sql);
     }
 
     public static boolean delete(User user, int oid) {
@@ -1546,99 +1041,129 @@ public class OrderManager {
         return opstatues;
     }
 
+    public static List<Order> getOrdersBySql(String sql) {
+        Map<Integer, Order> linkedHashMap = getOrdersMapBySql(sql);
+        List<Order> list = new ArrayList<Order>();
+
+        Iterator<Map.Entry<Integer, Order>> it = linkedHashMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Integer, Order> entity = it.next();
+            list.add(entity.getValue());
+        }
+        return list;
+    }
+
+    public static Map<Integer, Order> getOrdersMapBySql(String sql) {
+        sql = addJoinOrderProduct(sql);
+
+        logger.info(sql);
+        Connection conn = DB.getInstance().getConn();
+        Statement stmt = DB.getStatement(conn);
+        ResultSet rs = DB.getResultSet(stmt, sql);
+        Map<Integer, Order> linkedHashMap = new LinkedHashMap();
+
+        try {
+            while (rs.next()) {
+                Order p = gerOrderFromRs(rs);
+                if (null != linkedHashMap.get(p.getId())) {
+                    p = linkedHashMap.get(p.getId());
+                } else {
+                    linkedHashMap.put(p.getId(), p);
+                }
+                OrderProduct op = OrderProductManager.getOrderStatuesFromRs(rs);
+                if (null == p.getOrderProduct()) {
+                    p.setOrderProduct(new ArrayList<OrderProduct>());
+                }
+                p.getOrderProduct().add(op);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DB.close(stmt);
+            DB.close(rs);
+            DB.close(conn);
+        }
+
+        return linkedHashMap;
+    }
+
     public static Order gerOrderFromRs(ResultSet rs) {
         Order p = null;
         try {
             p = new Order();
-            p.setId(rs.getInt("id"));
-            p.setLocate(rs.getString("locates"));
-            p.setLocateDetail(rs.getString("locateDetail"));
-            p.setSaleTime(rs.getString("saledate"));
-            p.setSaleID(rs.getInt("saleID"));
-            p.setSendId(rs.getInt("sendID"));
-            p.setOdate(rs.getString("andate"));
-            p.setPhone1(rs.getString("phone1"));
-            p.setPhone2(rs.getString("phone2"));
-            p.setUsername(rs.getString("username"));
-            p.setPrintSatues(rs.getInt("printSatues"));
-            p.setDeliveryStatues(rs.getInt("deliveryStatues"));
-            p.setPos(rs.getString("pos"));
-            p.setSailId(rs.getString("sailId"));
-            p.setCheck(rs.getString("checked"));
-            p.setRemark(rs.getString("remark"));
-            p.setBranch(rs.getInt("orderbranch"));
-            p.setCategoryID(rs.getString("categoryID"));
-            p.setDealsendId(rs.getInt("dealSendid"));
-            p.setStatues1(rs.getInt("statues1"));
-            p.setStatues2(rs.getInt("statues2"));
-            p.setStatues3(rs.getInt("statues3"));
-            p.setStatues4(rs.getInt("statues4"));
-            p.setPrintSatuesP(rs.getInt("printSatuesp"));
-            p.setStatuesDingma(rs.getInt("statuesdingma"));
-            p.setInstallid(rs.getInt("installid"));
-            p.setPrintlnid(rs.getString("printlnid"));
-            p.setStatuescallback(rs.getInt("statuescallback"));
-            p.setStatuesPaigong(rs.getInt("statuespaigong"));
-            p.setDayremark(rs.getInt("dayremark"));
-            p.setDayID(rs.getInt("dayID"));
-            p.setPhoneRemark(rs.getInt("phoneRemark"));
-            p.setInstalltime(rs.getString("installTime"));
-            p.setSendtime(rs.getString("sendTime"));
-            p.setDeliverytype(rs.getInt("deliverytype"));
-            p.setPosremark(rs.getInt("posRemark"));
-            p.setSailidrecked(rs.getInt("sailIdremark"));
-            p.setReckedremark(rs.getInt("checkedremark"));
-            p.setStatuesinstall(rs.getInt("statuesinstall"));
-            p.setReturnid(rs.getInt("returnid"));
-            p.setSubmitTime(rs.getString("submitTime"));
-            p.setReturnstatuse(rs.getInt("returnstatues"));
-            p.setReturntime(rs.getString("returntime"));
-            p.setReturnprintstatues(rs.getInt("returnprintstatues"));
-            p.setReturnwenyuan(rs.getInt("returnwenyuan"));
-            p.setPrintdingma(rs.getInt("printdingma"));
-            p.setDealSendTime(rs.getString("dealsendTime"));
-            p.setWenyuancallback(rs.getInt("wenyuancallback"));
-            p.setOderStatus(rs.getString("oderStatus"));
-            p.setImagerUrl(rs.getString("imagerUrl"));
-            p.setChargeDealsendtime(rs.getString("chargeDealsendtime"));
-            p.setChargeSendtime(rs.getString("chargeSendtime"));
-            p.setChargeInstalltime(rs.getString("chargeInstalltime"));
-            p.setStatuesCharge(rs.getString("statuesChargeSale"));
+            p.setId(rs.getInt("mdorder.id"));
+            p.setLocate(rs.getString("mdorder.locates"));
+            p.setLocateDetail(rs.getString("mdorder.locateDetail"));
+            p.setSaleTime(rs.getString("mdorder.saledate"));
+            p.setSaleID(rs.getInt("mdorder.saleID"));
+            p.setSendId(rs.getInt("mdorder.sendID"));
+            p.setOdate(rs.getString("mdorder.andate"));
+            p.setPhone1(rs.getString("mdorder.phone1"));
+            p.setPhone2(rs.getString("mdorder.phone2"));
+            p.setUsername(rs.getString("mdorder.username"));
+            p.setPrintSatues(rs.getInt("mdorder.printSatues"));
+            p.setDeliveryStatues(rs.getInt("mdorder.deliveryStatues"));
+            p.setPos(rs.getString("mdorder.pos"));
+            p.setSailId(rs.getString("mdorder.sailId"));
+            p.setCheck(rs.getString("mdorder.checked"));
+            p.setRemark(rs.getString("mdorder.remark"));
+            p.setBranch(rs.getInt("mdorder.orderbranch"));
+            p.setCategoryID(rs.getString("mdorder.categoryID"));
+            p.setDealsendId(rs.getInt("mdorder.dealSendid"));
+            p.setStatues1(rs.getInt("mdorder.statues1"));
+            p.setStatues2(rs.getInt("mdorder.statues2"));
+            p.setStatues3(rs.getInt("mdorder.statues3"));
+            p.setStatues4(rs.getInt("mdorder.statues4"));
+            p.setPrintSatuesP(rs.getInt("mdorder.printSatuesp"));
+            p.setStatuesDingma(rs.getInt("mdorder.statuesdingma"));
+            p.setInstallid(rs.getInt("mdorder.installid"));
+            p.setPrintlnid(rs.getString("mdorder.printlnid"));
+            p.setStatuescallback(rs.getInt("mdorder.statuescallback"));
+            p.setStatuesPaigong(rs.getInt("mdorder.statuespaigong"));
+            p.setDayremark(rs.getInt("mdorder.dayremark"));
+            p.setDayID(rs.getInt("mdorder.dayID"));
+            p.setPhoneRemark(rs.getInt("mdorder.phoneRemark"));
+            p.setInstalltime(rs.getString("mdorder.installTime"));
+            p.setSendtime(rs.getString("mdorder.sendTime"));
+            p.setDeliverytype(rs.getInt("mdorder.deliverytype"));
+            p.setPosremark(rs.getInt("mdorder.posRemark"));
+            p.setSailidrecked(rs.getInt("mdorder.sailIdremark"));
+            p.setReckedremark(rs.getInt("mdorder.checkedremark"));
+            p.setStatuesinstall(rs.getInt("mdorder.statuesinstall"));
+            p.setReturnid(rs.getInt("mdorder.returnid"));
+            p.setSubmitTime(rs.getString("mdorder.submitTime"));
+            p.setReturnstatuse(rs.getInt("mdorder.returnstatues"));
+            p.setReturntime(rs.getString("mdorder.returntime"));
+            p.setReturnprintstatues(rs.getInt("mdorder.returnprintstatues"));
+            p.setReturnwenyuan(rs.getInt("mdorder.returnwenyuan"));
+            p.setPrintdingma(rs.getInt("mdorder.printdingma"));
+            p.setDealSendTime(rs.getString("mdorder.dealsendTime"));
+            p.setWenyuancallback(rs.getInt("mdorder.wenyuancallback"));
+            p.setOderStatus(rs.getString("mdorder.oderStatus"));
+            p.setImagerUrl(rs.getString("mdorder.imagerUrl"));
+            p.setChargeDealsendtime(rs.getString("mdorder.chargeDealsendtime"));
+            p.setChargeSendtime(rs.getString("mdorder.chargeSendtime"));
+            p.setChargeInstalltime(rs.getString("mdorder.chargeInstalltime"));
+            p.setStatuesCharge(rs.getString("mdorder.statuesChargeSale"));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return p;
     }
 
-    public boolean updateOrder(User user, Order order) {
-        if (user.getUsertype() == 2 && user.getId() == order.getSaleID()) {
-            Connection conn = DB.getInstance().getConn();
-            String sql = "update mdorder set productCategory = ?, productType = ? , locate = ?" +
-                    ", locateDetail = ?, date = ?, time = ?, saleID = ?" +
-                    ", saleTime = ?, printSatues = ?, mail = ?,oderStatus = ?";
-            PreparedStatement pstmt = DB.prepare(conn, sql);
-            try {
-                //pstmt.setString(1, order.getProductCategory());
-                pstmt.setString(2, order.getProductType());
-                pstmt.setString(3, order.getLocate());
-                pstmt.setString(4, order.getLocateDetail());
-                pstmt.setString(5, order.getDate());
-                pstmt.setString(6, order.getTime());
-                pstmt.setInt(7, order.getSaleID());
-                pstmt.setString(8, order.getSaleTime());
-                pstmt.setInt(9, order.getPrintSatues());
-                pstmt.setString(10, order.getMail());
-                //pstmt.setInt(11, order.getOderStatus());
-                pstmt.executeUpdate();
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                DB.close(pstmt);
-                DB.close(conn);
+    private static String addJoinOrderProduct(String sql) {
+        StringBuffer sb = new StringBuffer();
+        if ("".equals(sql)) {
+            return null;
+        } else {
+            sb.append(sql);
+            if (!sql.contains("limit")) {
+                sb.append(" limit 0,500");
             }
+            sb.insert(0, "select * from ( ");
+            sb.append(") mdorder JOIN mdorderproduct on mdorderproduct.orderid = mdorder.id ");
         }
-        return false;
+        return sb.toString();
     }
-
 }

@@ -151,7 +151,7 @@ public class UploadManager {
 			//取id_orderId对应的order (开始)
 			String db_ids = "";
 			String up_ids = "";
-			Map<String,Order> orderMap = new HashMap<String, Order>();
+			Map<Integer, Order> orderMap = new HashMap<Integer, Order>();
 			
 			Map<String,UploadOrder> uploadOrderMap = new HashMap<String, UploadOrder>();
 			Map<String,String> output = new HashMap<String, String>();
@@ -186,7 +186,7 @@ public class UploadManager {
 					
 					Order o = new Order();
 					UploadOrder uo = new UploadOrder();
-					o = orderMap.get(orderid);
+					o = orderMap.get(Integer.valueOf(orderid));
 					uo = uploadOrderMap.get(uploadorderid);
 					if(null == o || null == uo){
 						throw new SQLException();
@@ -320,7 +320,7 @@ public class UploadManager {
 		//取id_orderId对应的order (开始)
 		String db_ids = "";
 		String up_ids = "";
-		Map<String,Order> orderMap = new HashMap<String, Order>();
+		Map<Integer, Order> orderMap = new HashMap<Integer, Order>();
 		
 		Map<String,UploadOrder> uploadOrderMap = new HashMap<String, UploadOrder>();
 		Map<String,String> output = new HashMap<String, String>();
@@ -355,7 +355,7 @@ public class UploadManager {
 				
 				Order o = new Order();
 				UploadOrder uo = new UploadOrder();
-				o = orderMap.get(orderid);
+				o = orderMap.get(Integer.valueOf(orderid));
 				uo = uploadOrderMap.get(uploadorderid);
 				if(null == o || null == uo){
 					throw new SQLException();
@@ -1845,7 +1845,7 @@ public class UploadManager {
 		List <UploadOrder> result = new ArrayList<UploadOrder>();
 
 		Connection conn = DB.getInstance().getConn();
-		String sql = "select * from uploadorder where (checked = " + UploadOrder.UNCHECK + " or checked = " + UploadOrder.COMFIRMED + " )and name = '" + name + "' order by shop" ;
+		String sql = "select * from uploadorder where (checked = " + UploadOrder.UNCHECK + " or checked = " + UploadOrder.COMFIRMED + " ) and name = '" + name + "' order by shop";
 		logger.info(sql);
 		Statement stmt = DB.getStatement(conn); 
 		ResultSet rs = DB.getResultSet(stmt, sql);
