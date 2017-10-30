@@ -295,9 +295,9 @@ public class OrderManager {
     }
 
     public static Order getMaxOrder() {
-        String sql = "select * from (select * from mdorder order by id desc limit 1) o  JOIN mdorderproduct mp on mp.orderid = o.id ";
+        String sql = "select * from mdorder order by id desc limit 1 ";
         List<Order> orders = getOrdersBySql(sql);
-        return orders.get(0);
+        return getFromList(orders);
 
     }
 
@@ -939,9 +939,15 @@ public class OrderManager {
     public static Order getOrderID(User user, int id) {
         String sql = "select * from  mdorder where id = " + id;
         List<Order> orders = getOrdersBySql(sql);
-        return orders.get(0);
+        return getFromList(orders);
     }
 
+    public static Order getFromList(List<Order> orders) {
+        if (null != orders && orders.size() > 0) {
+            return orders.get(0);
+        }
+        return null;
+    }
     public static Map<Integer, Order> getOrdermapByIds(User user, String id) {
         String sql = "select * from  mdorder where id in (" + id + ")";
         return getOrdersMapBySql(sql);
