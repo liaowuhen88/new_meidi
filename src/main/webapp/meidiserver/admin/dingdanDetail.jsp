@@ -1,4 +1,17 @@
-<%@ page language="java" import="java.util.*,message.*,branch.*,locate.*,utill.*,category.*,product.*,gift.*,orderPrint.*,order.*,user.*,orderproduct.*,group.*;" pageEncoding="UTF-8"  contentType="text/html;charset=utf-8"%>
+<%@ page language="java"
+		 import="branch.Branch,branch.BranchService,category.Category,category.CategoryManager,group.Group,locate.Locate,locate.LocateManager,message.Message,message.MessageManager,order.Order,order.OrderManager,orderPrint.OrderPrintln"
+		 pageEncoding="UTF-8" contentType="text/html;charset=utf-8" %>
+<%@ page import="orderPrint.OrderPrintlnManager" %>
+<%@ page import="orderproduct.OrderProduct" %>
+<%@ page import="product.ProductManager" %>
+<%@ page import="product.ProductService" %>
+<%@ page import="user.User" %>
+<%@ page import="user.UserManager" %>
+<%@ page import="utill.StringUtill" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 
 <%       
 
@@ -30,9 +43,9 @@ List<Locate> listl = LocateManager.getLocate();
 
 HashMap<Integer,User> usermap = UserManager.getMap();
 
-List<OrderProduct> list = o.getOrderproduct();         
+	List<OrderProduct> list = o.getOrderProduct();
 //获取二次配单元（工队）
-List<User> listS = UserManager.getUsers(user ,Group.sencondDealsend);   
+	List<User> listS = UserManager.getUsers(user, Group.sencondDealsend);
   
 List<Category> listc = CategoryManager.getCategory(user,Category.sale); 
 

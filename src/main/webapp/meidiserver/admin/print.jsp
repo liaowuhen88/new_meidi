@@ -1,5 +1,9 @@
-<%@ page language="java" import="java.util.*,utill.*,java.text.SimpleDateFormat,category.*,orderPrint.*,product.*,gift.*,branch.*,order.*,user.*,orderproduct.*,group.*;" pageEncoding="UTF-8"  contentType="text/html;charset=utf-8"%>
- 
+<%@ page language="java"
+         import="category.Category,category.CategoryManager,gift.Gift,gift.GiftService,group.*,order.Order,order.OrderManager,orderproduct.OrderProduct,product.ProductService,user.User,user.UserService,java.util.HashMap"
+         pageEncoding="UTF-8" contentType="text/html;charset=utf-8" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+
 <%   
 request.setCharacterEncoding("utf-8"); 
 User user = (User)session.getAttribute("user");
@@ -31,8 +35,7 @@ int iddd = 0;
 
 HashMap<Integer,Category> categorymap = CategoryManager.getCategoryMap();
 
-Map<Integer,List<Gift>> gMap = GiftService.getmap(); 
-Map<Integer,List<OrderProduct>> OrPMap = OrderProductService.getStaticOrderStatuesM();;
+  Map<Integer, List<Gift>> gMap = GiftService.getmap();
 
 %> 
 
@@ -76,8 +79,8 @@ Map<Integer,List<OrderProduct>> OrPMap = OrderProductService.getStaticOrderStatu
  
 </table>
 <table width="1010" border="0" cellpadding="0" cellspacing="0"  id="t"  style="font-size:28px; font-weight:bolder;">
-<%  
-		     List<OrderProduct> listor = OrPMap.get(order.getId());
+<%
+  List<OrderProduct> listor = order.getOrderProduct();
              int  count =  listor.size(); 
             // if((Order.dingma+"").equals(type)){
              if(null != listor){

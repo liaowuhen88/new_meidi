@@ -1,4 +1,6 @@
-<%@ page language="java"  import="java.util.*,gift.*,orderPrint.*,category.*,group.*,user.*,utill.*,product.*,order.*,orderproduct.*,user.*;" pageEncoding="UTF-8"  contentType="text/html;charset=utf-8"%>
+<%@ page language="java"
+		 import="order.Order,order.OrderManager,orderproduct.OrderProduct,user.*,user.User,java.util.List"
+		 pageEncoding="UTF-8" contentType="text/html;charset=utf-8" %>
 <%  
 request.setCharacterEncoding("utf-8");
 User user = (User)session.getAttribute("user");
@@ -110,8 +112,8 @@ function saveAddPOD(){
 		     单号：<%=or.getPrintlnid() %>
 		     </td>
 		     </tr>
-		     <% 
-		     List<OrderProduct> list = or.getOrderproduct();
+		     <%
+				 List<OrderProduct> list = or.getOrderProduct();
 		     if(null != list && list.size() >0){
 		    	 for(int i=0 ;i<list.size();i++){
 		    		 OrderProduct op = list.get(i);

@@ -1,9 +1,9 @@
-<%@ page language="java"  pageEncoding="UTF-8"  contentType="text/html;charset=utf-8"%>
+<%@ page import="group.*" %>
+<%@ page language="java" pageEncoding="UTF-8" contentType="text/html;charset=utf-8" %>
 <%@ include file="searchdynamic.jsp"%> 
 <%   
    
 List<Order> list = OrderManager.getOrderlist(user,Group.send,Integer.valueOf(type),-1,0,sort,sear);
-Map<Integer,List<OrderProduct>> OrPMap = OrderProductService.getStaticOrderStatuesM();
 //System.out.println(user);
 HashMap<Integer,Category> categorymap = CategoryManager.getCategoryMap();
 %>
@@ -73,9 +73,9 @@ function search(type){
   <table> 
   
   
-    <%    
-    
-    List<OrderProduct> lists = OrPMap.get(o.getId());
+    <%
+
+		List<OrderProduct> lists = o.getOrderProduct();
    
 		     if(null != lists){
 			     for(int g = 0 ;g<lists.size();g++){ 

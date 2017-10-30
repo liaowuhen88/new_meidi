@@ -1,4 +1,10 @@
-<%@ page language="java" import="java.util.*,utill.*,java.text.SimpleDateFormat,category.*,product.*,branch.*,orderPrint.*,gift.*,order.*,user.*,orderproduct.*,group.*;" pageEncoding="UTF-8"  contentType="text/html;charset=utf-8"%>
+<%@ page language="java"
+         import="branch.BranchService,category.Category,category.CategoryManager,gift.Gift,gift.GiftService,group.*,order.Order,order.OrderManager,orderproduct.OrderProduct,product.ProductService,user.User,user.UserManager"
+         pageEncoding="UTF-8" contentType="text/html;charset=utf-8" %>
+<%@ page import="utill.TimeUtill" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 
 <%  
 String message = "";
@@ -57,10 +63,8 @@ int iddd = 0;
 User send = usermap.get(order.getDealsendId());  
  
 HashMap<Integer,Category> categorymap = CategoryManager.getCategoryMap();
- 
-Map<Integer,List<Gift>> gMap = GiftService.getmap(); 
-Map<Integer,List<OrderProduct>> OrPMap =OrderProductService.getStaticOrderStatuesM();;
 
+  Map<Integer, List<Gift>> gMap = GiftService.getmap();
 String time = TimeUtill.getPrintlnTime();
 
 %>
@@ -133,8 +137,8 @@ body{
 </tr> 
 <tr>  
   <td height="30" colspan="5" align="center" valign="middle" bgcolor="#FFFFFF"><table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <% 
-		     List<OrderProduct> listor = OrPMap.get(order.getId());
+    <%
+      List<OrderProduct> listor = order.getOrderProduct();
              int  count =  listor.size();
              if(null != listor){
                  for(int g = 0 ;g<listor.size();g++){ 
