@@ -28,7 +28,7 @@ public class DB {
         dataSource.setUsername("root");
         dataSource.setPassword("liaowuhen");
 */
-        dataSource.setUrl("jdbc:mysql://liaowuhen.gotoftp3.com:3306/liaowuhen");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/liaowuhendgNew");
         dataSource.setUsername("liaowuhen");
         dataSource.setPassword("liaowuhen");
         dataSource.setMaxActive(50);
